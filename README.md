@@ -7,6 +7,9 @@ built entirely from data.
 Open `index.html` in a WebGPU browser (Brave, Chrome, Edge). It needs no server. Drop another
 scenario `.json` onto the page to load it.
 
+Every push to `main` deploys the page to GitHub Pages (`.github/workflows/pages.yml`). This needs
+**Settings → Pages → Source: GitHub Actions** turned on once for the repository.
+
 ## Concepts
 
 | Here | Far Cry 1 | SECTR |
