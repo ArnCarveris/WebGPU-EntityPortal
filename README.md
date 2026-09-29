@@ -64,6 +64,10 @@ Walls, floors, ceilings, the exterior shell and roofs are generated from the are
 - Underground parts get no shell.
 - Portal apertures are cut out (convex polygon subtraction).
 - Frames are generated for portals.
+- Geometry that crosses a portal is cut along the portal plane (`splitMesh`): door and window frames,
+  hatch rims, props and the door panels. Each half belongs to, and is lit by, the area on its side,
+  so it draws only inside that area's stencil region. Door panels are split in local space, and each
+  half keeps the area its face looks into, so a sliding hatch cover still looks closed from below.
 - `stairs` entities build step blocks.
 
 ### Sea, docks and the freighter
@@ -71,7 +75,10 @@ Walls, floors, ceilings, the exterior shell and roofs are generated from the are
 - **Coast:** `outdoor.terrain.coast` sinks the land below a shore line into a seabed. `flatten`
   rects level the ground (the quay), and `beachMat` paints sand near the water line.
 - **Water:** `outdoor.water` is an animated plane with fresnel sky reflection and sun glints. It is
-  drawn last in every outdoor visibility entry, masked by that entry's stencil ref.
+  drawn last in every outdoor visibility entry, masked by that entry's stencil ref. Each hull cuts
+  its waterline cross-section out of the water mesh, so the sea never draws inside a ship. The hold
+  floor is below sea level, and the water would otherwise cover it wherever the outdoor view reaches
+  the hold. That happens when the camera crosses the hatch, and in the scissor/none modes.
 - **Hull:** a `hull` entity extrudes a ship from its deck outline. The sides taper to the keel, with
   an antifouling band below the paint line and a bulwark with gaps. The deck is the outline minus
   the roofs of the interior areas under it.

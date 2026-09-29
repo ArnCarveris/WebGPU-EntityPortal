@@ -507,7 +507,7 @@
     { "type": "door", "portal": "p_ship_bulkhead",    "auto": true, "style": "ship", "mat": "shipdoor" },
     { "type": "door", "portal": "p_ship_hatch_up",    "auto": true, "style": "ship", "mat": "shipdoor", "radius": 2.2, "lift": 0.05 },
     { "type": "door", "portal": "p_ship_hatch_down",  "auto": true, "style": "ship", "mat": "shipdoor", "radius": 2.2, "lift": 0.05 },
-    { "type": "door", "portal": "p_cargo_hatch",      "auto": true, "mat": "shipdeck", "radius": 11, "slide": "down", "lift": 0.35, "speed": 0.6 },
+    { "type": "door", "portal": "p_cargo_hatch",      "auto": true, "mat": "shipdeck", "radius": 11, "slide": "down", "lift": 0.1, "speed": 0.6 },
 
     { "type": "prop", "model": "engineBlock", "pos": [56.5, -2, 1.5], "rot": 0 },
     { "type": "prop", "model": "generator",   "pos": [51.6, -2, 4.5], "rot": 90 },
@@ -876,6 +876,37 @@ function classify(min, max, planes, mask) {
     }
     return out;
 }
+// Split a MeshBuilder by a plane [nx, ny, nz, d] into [negative side, positive side].
+// Straddling triangles are clipped; position and normal are interpolated, winding is kept.
+function splitMesh(b, plane) {
+    const neg = new MeshBuilder(), pos = new MeshBuilder(), eps = 1e-5;
+    const V = i => ({ p: [b.data[i * 7], b.data[i * 7 + 1], b.data[i * 7 + 2]], n: [b.data[i * 7 + 3], b.data[i * 7 + 4], b.data[i * 7 + 5]], m: b.data[i * 7 + 6] });
+    const emit = (dst, verts) => {
+        if (verts.length < 3) return;
+        const base = dst.count;
+        for (const v of verts) dst.vert(v.p, v.n, v.m);
+        for (let k = 1; k < verts.length - 1; k++) dst.idx.push(base, base + k, base + k + 1);
+    };
+    const clip = (tri, ds, sign) => {
+        const out = [];
+        for (let i = 0; i < 3; i++) {
+            const a = tri[i], c = tri[(i + 1) % 3], da = ds[i] * sign, dc = ds[(i + 1) % 3] * sign;
+            if (da >= 0) out.push(a);
+            if ((da >= 0) !== (dc >= 0)) {
+                const t = da / (da - dc);
+                out.push({ p: v3.lerp(a.p, c.p, t), n: v3.norm(v3.lerp(a.n, c.n, t)), m: a.m });
+            }
+        }
+        return out;
+    };
+    for (let t = 0; t < b.idx.length; t += 3) {
+        const tri = [V(b.idx[t]), V(b.idx[t + 1]), V(b.idx[t + 2])], ds = tri.map(v => planeDist(plane, v.p));
+        if (ds.every(d => d <= eps)) emit(neg, tri);
+        else if (ds.every(d => d >= -eps)) emit(pos, tri);
+        else { emit(pos, clip(tri, ds, 1)); emit(neg, clip(tri, ds, -1)); }
+    }
+    return [neg, pos];
+}
 function clipPoly3(poly, planes) {
     let out = poly;
     for (const p of planes) {
@@ -1019,6 +1050,12 @@ class World {
         this.buildOutdoor();
         this.spawnEntities();
         this.buildTrees();
+        if (this.water) {
+            const [a, , c] = [this.water.verts[0], null, this.water.verts[2]], y = this.water.level;
+            let pieces = [[[a[0], a[2]], [c[0], a[2]], [c[0], c[2]], [a[0], c[2]]]];
+            for (const m of this.waterMasks || []) pieces = g2.subtract(pieces, m);
+            this.water.pieces = pieces.map(pc => pc.map(q => [q[0], y, q[1]]));
+        }
         this.totalTris = this.objects.reduce((s, o) => s + o.chunk.count / 3, 0);
         for (const w of this.warnings) console.warn('[scenario]', w);
     }
@@ -1263,11 +1300,39 @@ class World {
         }
     }
     addStatic(b, info) {
-        const chunk = this.pool.add(b, info);
-        if (!chunk) return null;
-        const obj = { name: info.name, chunk, min: chunk.min, max: chunk.max, owners: info.owners, lightArea: info.lightArea, model: IDENTITY, stamp: -1 };
-        this.objects.push(obj);
-        return obj;
+        const parts = this.splitByPortals(b, info.owners, info.lightArea);
+        parts.forEach((part, k) => {
+            const name = parts.length > 1 ? `${info.name}|${this.areas[part.owners[0]].id}` : info.name;
+            const chunk = this.pool.add(part.b, Object.assign({}, info, { name, owners: part.owners, lightArea: part.lightArea }));
+            if (chunk) this.objects.push({ name, chunk, min: chunk.min, max: chunk.max, owners: part.owners, lightArea: part.lightArea, model: IDENTITY, stamp: -1 });
+        });
+    }
+    // does the mesh cross portal P's plane close to its aperture?
+    straddles(b, P, margin = 0.6) {
+        const c = v3.lerp(b.min, b.max, 0.5), h = v3.mul(v3.sub(b.max, b.min), 0.5);
+        const ext = ax => Math.abs(ax[0]) * h[0] + Math.abs(ax[1]) * h[1] + Math.abs(ax[2]) * h[2];
+        const dn = v3.dot(P.normal, c) + P.d, rn = ext(P.normal);
+        if (dn - rn > -1e-3 || dn + rn < 1e-3) return false;
+        const rel = v3.sub(c, P.center);
+        return Math.abs(v3.dot(rel, P.right)) <= P.w / 2 + margin + ext(P.right) && Math.abs(v3.dot(rel, P.up)) <= P.h / 2 + margin + ext(P.up);
+    }
+    // cut geometry owned by both sides of a portal along the portal plane: each half belongs to
+    // (and is lit by) the area on its side, so stencil masks and lighting stay per area
+    splitByPortals(b, owners, lightArea) {
+        let pieces = [{ b, owners }];
+        if (owners.length > 1) for (const P of this.portals) {
+            const next = [];
+            for (const pc of pieces) {
+                if (!pc.owners.includes(P.front) || !pc.owners.includes(P.back) || !this.straddles(pc.b, P)) { next.push(pc); continue; }
+                const [neg, pos] = splitMesh(pc.b, [P.normal[0], P.normal[1], P.normal[2], P.d]);   // normal points to the back side
+                // a piece keeps the owners on its side that its own bounds still overlap
+                const refine = (half, owners) => { const ov = this.areasOverlapping(half.min, half.max), r = owners.filter(o => ov.includes(o)); return r.length ? r : ov; };
+                if (neg.idx.length) next.push({ b: neg, owners: refine(neg, pc.owners.filter(o => o !== P.back)) });
+                if (pos.idx.length) next.push({ b: pos, owners: refine(pos, pc.owners.filter(o => o !== P.front)) });
+            }
+            pieces = next;
+        }
+        return pieces.map(pc => ({ b: pc.b, owners: pc.owners, lightArea: pc.owners.includes(lightArea) ? lightArea : pc.owners[0] }));
     }
 
     addModel(b, name, M) {
@@ -1504,6 +1569,7 @@ const ENTITY_TYPES = {
         for (const p of top) b.poly(p.map(q => [q[0], deck, q[1]]), [0, 1, 0], mDeck);
         world.addStatic(b, { name: `hull:${e.id || 'ship'}`, owners: [0], lightArea: 0 });
         (world.hulls ||= []).push(out);
+        if (world.water) (world.waterMasks ||= []).push(out.map((_, i) => { const q = at(i, world.water.level); return [q[0], q[2]]; }));
     },
     // SECTR_Door: manages the Closed flag of its portal; auto doors open for nearby actors
     door(world, e) {
@@ -1524,16 +1590,16 @@ const ENTITY_TYPES = {
             b.box([0, -P.h / 2 + 0.12, 0], AXES, [P.w / 2 - 0.02, 0.1, 0.05], world.mat('hazard'));
             if (e.auto) b.box([0, P.h / 2 - 0.2, 0], AXES, [0.25, 0.04, 0.06], world.mat('coldlamp'));
         }
-        const chunk = world.pool.add(b, { name: `door:${P.id}`, dynamic: true });
+        const [frontHalf, backHalf] = splitMesh(b, [0, 0, 1, 0]);
         P.locked = !!e.locked;
         P.autoDoor = !!e.auto && !P.locked;
         const startOpen = !!e.open && !e.auto;
         const ent = {
-            type: 'door', portal: P, chunk, auto: !!e.auto, lift: e.lift || 0,
+            type: 'door', portal: P, auto: !!e.auto, lift: e.lift || 0,
             // slide direction in the portal frame: right | left | up | down
             slide: { right: [P.right, P.w], left: [v3.mul(P.right, -1), P.w], up: [P.up, P.h], down: [v3.mul(P.up, -1), P.h] }[e.slide || 'right'], radius: e.radius || 3.2, delay: e.delay ?? 1.2, hold: 0,
             open: startOpen ? 1 : 0, target: startOpen ? 1 : 0, speed: e.speed || (e.auto ? 2.6 : 1.4), stamp: -1,
-            owners: [...new Set([P.front, P.back])], lightArea: P.front || P.back, model: IDENTITY, min: [0, 0, 0], max: [0, 0, 0],
+            owners: [], lightArea: P.front || P.back, model: IDENTITY,
             toggle() { if (P.locked) return 'locked'; if (this.auto) return 'auto'; this.target = this.target > 0.5 ? 0 : 1; return 'ok'; },
             update(w, dt, t, actors) {
                 if (this.auto && !P.locked) {
@@ -1547,11 +1613,26 @@ const ENTITY_TYPES = {
                 const ease = this.open * this.open * (3 - 2 * this.open);
                 const lift = this.lift * Math.min(1, this.open * 4);
                 this.model = m4.basis(P.right, P.up, P.normal, v3.madd(v3.madd(P.center, this.slide[0], this.slide[1] * 0.97 * ease), P.normal, lift));
-                setWorldBounds(this, chunk);
             },
         };
         ent.update(world, 0, 0, []);
         world.dynamic.push(ent);
+        [frontHalf, backHalf].forEach((half, k) => {
+            const chunk = world.pool.add(half, { name: `door:${P.id}:${k ? 'back' : 'front'}`, dynamic: true });
+            if (!chunk) return;
+            // each half always belongs to the area its face looks into, however far the panel
+            // slides or lifts: the underside of a hatch cover stays part of (and lit by) the room
+            const area = k ? P.back : P.front;
+            const part = {
+                type: 'doorHalf', door: ent, chunk, stamp: -1, owners: [area], lightArea: area, model: IDENTITY, min: [0, 0, 0], max: [0, 0, 0],
+                update() {
+                    this.model = ent.model;
+                    setWorldBounds(this, chunk);
+                },
+            };
+            part.update();
+            world.dynamic.push(part);
+        });
     },
     // dynamic SECTR Member that walks the sector graph
     drone(world, e) {
@@ -2210,6 +2291,11 @@ function buildFrame(vis, mode, W, H) {
         for (let k = 1; k < pts.length - 1; k++) for (const p of [pts[0], pts[k], pts[k + 1]]) polys.push(p[0], p[1], p[2], n[0], n[1], n[2], c[0], c[1], c[2], c[3]);
         return { first, count: polys.length / POLY_FLOATS - first };
     };
+    const addPolys = (list, n, c) => {
+        const first = polys.length / POLY_FLOATS;
+        for (const pts of list) addPoly(pts, n, c);
+        return { first, count: polys.length / POLY_FLOATS - first };
+    };
 
     if (mode === 'stencil') {
         let nextRef = 1;
@@ -2228,7 +2314,7 @@ function buildFrame(vis, mode, W, H) {
             }
             // water last: it blends over this outdoor entry only (children already own their stencil refs)
             if (e.area === 0 && w.water && !e.skyOnly && aabbVisible(w.water.min, w.water.max, e.planes)) {
-                cmds.push(Object.assign({ op: 'water', ref: e.ref, rect: e.rect }, addPoly(w.water.verts, [0, 1, 0], w.water.color)));
+                cmds.push(Object.assign({ op: 'water', ref: e.ref, rect: e.rect }, addPolys(w.water.pieces, [0, 1, 0], w.water.color)));
                 st.water++;
             }
         };
@@ -2241,7 +2327,7 @@ function buildFrame(vis, mode, W, H) {
         const outs = (vis.nodes[0] || []).filter(e => !e.skyOnly && w.water && aabbVisible(w.water.min, w.water.max, e.planes));
         if (outs.length) {
             const r = outs.reduce((a, e) => rectUnion(a, e.rect), null);
-            cmds.push(Object.assign({ op: 'water', ref: 0, rect: mode === 'scissor' ? r : full }, addPoly(w.water.verts, [0, 1, 0], w.water.color)));
+            cmds.push(Object.assign({ op: 'water', ref: 0, rect: mode === 'scissor' ? r : full }, addPolys(w.water.pieces, [0, 1, 0], w.water.color)));
             st.water++;
         }
         const panes = [...new Set(vis.entries.filter(e => e.via && e.via.glass && !e.share).map(e => e.via))];
