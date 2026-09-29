@@ -110,6 +110,24 @@ planes into that space instead of moving trees. Portals, lights, doors and the w
 the sea are placed in world space every frame. The island falls off into the sea at the terrain
 extent (`terrain.island`).
 
+### Taking the helm (`helm` entity)
+
+Press `F` at the ship's wheel on the bridge to take control. `W`/`S` move the throttle lever from
+half astern to full ahead, `A`/`D` turn the wheel (the rudder self-centres), `X` stops the engines,
+`Space` centres the rudder and `F` leaves.
+
+- **Handling:** the rudder only bites with water flowing past it, so turn rate scales with speed and
+  reverses astern. The ship heels out of turns.
+- **Collisions:** the hull is checked against the seabed along its keel line and against structures
+  below deck height (the quay) along its deck line. A turn that would swing the stern into the quay
+  goes straight instead; a collision ahead bumps the ship to a stop.
+- **Helm animation:** the spoked wheel turns with the rudder and the lever follows the throttle.
+  Both are dynamic members riding the ship, and they also move on autopilot.
+- **Camera:** while you drive, it is locked to the helm stand and follows the hull's full rotation,
+  so you roll and pitch with the ship.
+- **Autopilot:** when you let go, it steers back onto the route by pure pursuit, backing off if it
+  bumps into something. Once back on the line it resumes the cruise and docking cycle.
+
 ### Walking (default, `V` toggles fly)
 
 - **Collision:** built from the scene triangles. Floors (upward-facing triangles) and walls (XZ
@@ -130,7 +148,8 @@ Lighting is per area: a low ambient, a sun factor, fog and up to 12 point lights
 
 Click for mouse look. `WASD` move, `Space` jump, `Shift` run, `W/S` on ladders. `V` switches to fly
 mode, where `E/Q` move up and down. `F` shows door status (all doors are automatic), `R` resets.
-Click the minimap to teleport; clicking the ship lands you on its deck.
+The minimap is centred on you. Click it to teleport; clicking the ship lands you on its deck. `F` at
+the ship's wheel takes the helm.
 
 | Key | Toggle |
 |---|---|
@@ -141,7 +160,7 @@ Click the minimap to teleport; clicking the ship lands you on its deck.
 | `5` | area volumes |
 | `6` | occluders |
 | `M` | minimap |
-| `N` | minimap: compound / whole island with the ship's route |
+| `N` | minimap span: near (110 m) / island (420 m), always centred on you |
 | `H` | help |
 
 `window.portalDemo` exposes `world`, `vis`, `cam` and `opts` for debugging.
