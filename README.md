@@ -1,14 +1,72 @@
 # Entity Portal // WebGPU
 
 A Portal-Room visibility system in WebGPU, modelled on the Far Cry 1 (CryEngine 1) VisArea/Portal
-system and SECTR (Sector/Portal/Occluder). It is one self-contained `index.html` and the world is
-built entirely from data.
+system and SECTR (Sector/Portal/Occluder). The engine is a set of classes in `js/`, and the whole
+world is built from a scenario `.json` file in `scenarios/`.
 
-Open `index.html` in a WebGPU browser (Brave, Chrome, Edge). It needs no server. Drop another
-scenario `.json` onto the page to load it.
+Open `index.html` in a WebGPU browser (Brave, Chrome, Edge), straight from disk or served over HTTP.
+It loads `scenarios/bunker-compound.json` by default. To load another scenario from disk, click
+**Load scenario…** (bottom right), press `L`, or drop a `.json` onto the page. Served over HTTP,
+`?scenario=<url>` picks the scenario to start with.
 
-Every push to `main` deploys the page to GitHub Pages (`.github/workflows/pages.yml`). This needs
-**Settings → Pages → Source: GitHub Actions** turned on once for the repository.
+Browsers block `fetch()` on pages opened from disk, so there the default scenario comes from
+`scenarios/bunker-compound.js`, a script copy of the `.json`. The `.json` is the source of truth:
+after editing it, regenerate the copy (the Pages deploy does this too):
+
+```bash
+node tools/embed-scenarios.mjs
+```
+
+Served over HTTP, the page always fetches the `.json` itself:
+
+```bash
+python -m http.server 8766
+```
+
+Every push to `main` regenerates the script copies and deploys the page, `js/` and `scenarios/` to GitHub Pages
+(`.github/workflows/pages.yml`). This needs **Settings → Pages → Source: GitHub Actions** turned on
+once for the repository.
+
+## Layout
+
+```
+js/core/            config (limits, buffer layouts), math, 2D polygons, frustum / clipping
+js/render/          MeshBuilder + GeometryPool, MaterialTable, WGSL shaders, Renderer,
+                    FrameBuilder (visibility -> command list), DebugLines
+js/vis/             QuadTree / BVHTree object trees, PortalVis (portal traversal)
+js/world/           Area + PointLight, Portal + Occluder, Architecture (generated walls / roofs / frames),
+                    Outdoors + Water, CollisionSet, NavGraph, Vehicle + Route, entity classes, World
+js/game/            Camera + PlayerController, InputSystem, Hud, Minimap, Game (frame loop)
+js/scenario-loader.js  fetch / embedded copy / pick / drop scenario files
+js/main.js          entry point
+scenarios/          scenario data (bunker-compound.json) + generated script copies (.js)
+tools/              embed-scenarios.mjs: regenerate the script copies
+```
+
+## Scenario file
+
+| Key | Contents |
+|---|---|
+| `name`, `camera` | title; start `pos`, `yaw`, `pitch` (degrees) and `fov` |
+| `player` | walker tuning: `eyeHeight`, `radius`, `walkSpeed`, `runSpeed`, `stepHeight`, `jumpSpeed`, `gravity`, `climbSpeed`, `swim`, `fly`, `turnSpeed`, `mouseSensitivity`, `helm` rates. All optional |
+| `minimap` | `near` / `far` spans in metres (key `N`) |
+| `materials` | `albedo`, `pattern` (`flat`, `tiles`, `panels`, `noise`, `grass`, `hazard`, `planks`, `bricks`, `screen`, `rust`), `scale`, `spec`, `emissive` [r, g, b, strength] |
+| `models` | lists of `box` [x, y, z, sx, sy, sz], `cyl` / `cone` [x, y, z, r, h] parts with `mat` and `seg` |
+| `outdoor` | the implicit outdoor area: lighting, sky, `terrain`, `water`, `scatter` |
+| `areas` | `shape`, `y`, `height`, `ambient`, `sun`, `fog`, `hub`, `materials`, `shellFrom`, `terrain`, `nav` |
+| `portals` | `center`, `size`, `normal`, `kind`, flags, `glass`, optional `front` / `back` |
+| `occluders` | `center`, `size`, `normal`, `autoOrient` |
+| `vehicles` | `hull`, `pivot`, `route`, `waves`, handling |
+| `entities` | `{ type, ... }`, where `type` maps to a class in `ENTITY_TYPES` (`js/world/entities.js`): `prop` (`solid`, `climbable`, `area`), `light`, `stairs`, `hull`, `helm`, `door`, `drone` |
+
+### Adding a new kind of entity
+
+1. Subclass `Entity` (static geometry or controllers) or `Member` (a dynamic chunk drawn with its own
+   matrix) in `js/world/entities.js`.
+2. Build its geometry in `spawn()` with `world.addStatic` / `world.pool.add`, and call
+   `world.addDynamic(this)` if it needs `update(dt, t, actors)`. Resolve references to vehicles or
+   other entities in `link()`.
+3. Register it in `ENTITY_TYPES` and place it in the scenario's `entities`.
 
 ## Concepts
 
@@ -54,9 +112,13 @@ stencil in three steps:
 The child's objects and sky then draw with stencil EQUAL, masked to the aperture exactly. There are
 127 refs per frame.
 
-Afterwards the portal is covered in the fog of the air in front of it, over the distance from the
-eye to the portal. A glass pane carries that fog; an open portal gets a fog veil. So distant windows
-and doorways fade into the fog like the walls around them, instead of showing an unfogged interior.
+Fog through portals: every draw carries the chain of portals it is seen through (up to 4), each with
+its plane and the fog of the area in front of it. The scene shader splits the view ray at those
+planes and fogs each stretch with the air it crosses, the last one with the surface's own area. This
+happens in linear colour before tone mapping, like the fog on walls, so distant windows, doorways and
+the cargo hold under an open hatch fade into the fog exactly like the walls around them. Glass panes
+are then fogged only for their own distance. The scissor and none modes draw objects once for all
+entries, so there a fog veil over each open portal (and the glass pane) approximates it.
 
 Key `3` cycles the masking mode: stencil, scissor rects, or none.
 
@@ -161,6 +223,7 @@ the ship's wheel takes the helm.
 | `6` | occluders |
 | `M` | minimap |
 | `N` | minimap span: near (110 m) / island (420 m), always centred on you |
+| `L` | load a scenario `.json` from disk |
 | `H` | help |
 
 `window.portalDemo` exposes `world`, `vis`, `cam` and `opts` for debugging.

@@ -25,8 +25,9 @@ jobs:
 
       - name: Prepare site
         run: |
+          node tools/embed-scenarios.mjs
           mkdir _site
-          cp index.html _site/
+          cp -r index.html js scenarios _site/
           touch _site/.nojekyll
 
       - uses: actions/configure-pages@v5
