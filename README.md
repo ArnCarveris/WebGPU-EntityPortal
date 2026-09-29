@@ -51,8 +51,12 @@ stencil in three steps:
 2. Write the child's ref.
 3. Clear bit 7.
 
-The child's objects and sky then draw with stencil EQUAL, masked to the aperture exactly. Glass
-panes are blended over the child afterwards. There are 127 refs per frame.
+The child's objects and sky then draw with stencil EQUAL, masked to the aperture exactly. There are
+127 refs per frame.
+
+Afterwards the portal is covered in the fog of the air in front of it, over the distance from the
+eye to the portal. A glass pane carries that fog; an open portal gets a fog veil. So distant windows
+and doorways fade into the fog like the walls around them, instead of showing an unfogged interior.
 
 Key `3` cycles the masking mode: stencil, scissor rects, or none.
 
@@ -86,15 +90,47 @@ Walls, floors, ceilings, the exterior shell and roofs are generated from the are
   `terrain: false` and `nav: false`: an Engine Room and Cargo Hold below deck, and a Crew Deck and
   Bridge in the superstructure. They connect through `style: "ship"` automatic doors and hatches.
   The large cargo hatch cover uses `slide` and `lift`.
-- **Gangway:** `stairs` with `open` treads and `rails`.
+- **Gangway:** `stairs` with `open` treads and `rails`, tagged `vehicle` and `dockedOnly`, so it is only
+  there while the ship is at the quay.
+
+### The freighter voyage (`vehicles`)
+
+A vehicle is a moving group of areas, portals, objects and lights. Everything inside the hull
+outline (or tagged with `vehicle`) is authored at the docked pose, and that pose is the vehicle's
+local space.
+
+Each frame one transform carries the vehicle along a closed Catmull-Rom `route`, evaluated on the
+spline itself. The hull yaws toward the tangent through a critically damped spring (`yawResponse`),
+so turns start and end without jolts. The ship accelerates, cruises, brakes to rest exactly on the
+dock mark and waits there. On top of that come heel from steering (the ship leans out of the turn)
+and pitch, roll and heave from the waves. The waves ease down to calm while docked.
+
+The vehicle's areas keep their BVHs in vehicle space. Visibility queries transform the frustum
+planes into that space instead of moving trees. Portals, lights, doors and the waterline hole in
+the sea are placed in world space every frame. The island falls off into the sea at the terrain
+extent (`terrain.island`).
+
+### Walking (default, `V` toggles fly)
+
+- **Collision:** built from the scene triangles. Floors (upward-facing triangles) and walls (XZ
+  segments with a height range) are hashed on a 2 m grid, and each vehicle has its own set in
+  vehicle space.
+- **Movement:** a 0.3 m walker with gravity, jumping, 0.55 m steps (sampled under the walker's whole
+  footprint, so short treads work) and wall sliding.
+- **Doors, ladders, water:** closed doors block, and closed hatch covers can be stood on. Ladders
+  climb with `W`/`S`. You can swim in the sea and climb out onto the quay.
+- **Riding:** standing on or inside a vehicle stores your position in vehicle space, so you ride
+  with it, turning when it turns. Walk up the gangway while it's docked, then explore the deck,
+  crew deck, bridge, engine room and hold at sea.
 
 Lighting is per area: a low ambient, a sun factor, fog and up to 12 point lights with
 `flicker`/`pulse` signals.
 
 ## Controls
 
-Click for mouse look. `WASD` fly, `E/Q` up/down, `Shift` fast, `F` door status (all doors are automatic), `R` reset. Click
-the minimap to teleport.
+Click for mouse look. `WASD` move, `Space` jump, `Shift` run, `W/S` on ladders. `V` switches to fly
+mode, where `E/Q` move up and down. `F` shows door status (all doors are automatic), `R` resets.
+Click the minimap to teleport; clicking the ship lands you on its deck.
 
 | Key | Toggle |
 |---|---|
@@ -105,6 +141,7 @@ the minimap to teleport.
 | `5` | area volumes |
 | `6` | occluders |
 | `M` | minimap |
+| `N` | minimap: compound / whole island with the ship's route |
 | `H` | help |
 
 `window.portalDemo` exposes `world`, `vis`, `cam` and `opts` for debugging.

@@ -195,8 +195,8 @@
                    { "box": [0, 1.0, -5, 7.8, 0.6, 0.6], "mat": "crane" }, { "box": [0, 1.0, 5, 7.8, 0.6, 0.6], "mat": "crane" },
                    { "box": [6, 14.5, -1.2, 28, 1.0, 0.8], "mat": "crane" }, { "box": [6, 14.5, 1.2, 28, 1.0, 0.8], "mat": "crane" },
                    { "box": [-3.5, 14.5, 0, 0.8, 1.0, 11], "mat": "crane" }, { "box": [3.5, 14.5, 0, 0.8, 1.0, 11], "mat": "crane" },
-                   { "box": [11, 13.2, 0, 2.2, 1.8, 2.8], "mat": "shipwhite" }, { "box": [11, 13.3, 1.41, 1.8, 0.8, 0.02], "mat": "screen" },
-                   { "box": [11, 10.5, 0, 0.05, 6, 0.05], "mat": "metal" }, { "box": [11, 7.3, 0, 0.8, 0.5, 0.5], "mat": "hazard" }],
+                   { "box": [1.5, 13.2, 0, 2.2, 1.8, 2.8], "mat": "shipwhite" }, { "box": [1.5, 13.3, 1.41, 1.8, 0.8, 0.02], "mat": "screen" },
+                   { "box": [1.5, 10.5, 0, 0.05, 6, 0.05], "mat": "metal" }, { "box": [1.5, 7.3, 0, 0.8, 0.5, 0.5], "mat": "hazard" }],
     "shipCrane":  [{ "cyl": [0, 0, 0, 0.6, 6.5], "seg": 12, "mat": "crane" }, { "box": [0, 7.0, 0, 2.0, 1.6, 2.0], "mat": "crane" },
                    { "box": [0, 7.6, 5.5, 0.5, 0.5, 9], "mat": "crane" }, { "box": [0, 6.0, 9.8, 0.04, 3.0, 0.04], "mat": "metal" }, { "box": [0, 4.5, 9.8, 0.4, 0.3, 0.4], "mat": "hazard" }],
     "mast":       [{ "cyl": [0, 0, 0, 0.18, 10], "seg": 8, "mat": "shipwhite" }, { "box": [0, 8.5, 0, 3.0, 0.12, 0.12], "mat": "shipwhite" }, { "box": [0, 10.05, 0, 0.25, 0.2, 0.25], "mat": "redlamp" }],
@@ -237,7 +237,8 @@
     "terrain": { "extent": [-80, -70, 140, 110], "chunk": 20, "step": 1.0, "amp": 2.8, "freq": 0.035, "flat": 5, "blend": 22,
                  "mat": "grass", "beachMat": "sand", "beachHeight": 0.7,
                  "flatten": [[30, -34, 48, 74]],
-                 "coast": { "point": [46, 0], "normal": [1, 0], "width": 8, "depth": 12, "wobble": 4 } },
+                 "coast": { "point": [46, 0], "normal": [1, 0], "width": 8, "depth": 12, "wobble": 4 },
+                 "island": { "falloff": 30, "depth": 12 } },
     "water": { "level": -1.2, "extent": [-420, -420, 520, 520], "color": [0.05, 0.22, 0.24, 0.8], "seabed": { "y": -11.5, "mat": "sand" } },
     "scatter": [
       { "model": "tree", "count": 120, "seed": 7,  "extent": [-75, -65, 75, 85], "clearance": 7, "scale": [0.8, 1.5], "avoid": [[-5, -40, 5, 0], [-21, -21, -19, 11]] },
@@ -330,6 +331,13 @@
     { "id": "occ_pillar",  "center": [9, 3.95, 30.5], "size": [1.5, 7.7], "normal": [0, 0, 1], "autoOrient": "y" }
   ],
 
+  "vehicles": [
+    { "id": "freighter", "hull": "freighter", "pivot": [55, -1.2, 29],
+      "route": { "dock": 0, "speed": 7, "accel": 0.35, "wait": 30,
+                 "points": [[55, 29], [55, 75], [55, 125], [55, 160], [20, 190], [-60, 188], [-130, 150], [-158, 60], [-155, -40], [-125, -110], [-50, -140], [20, -140], [55, -110], [55, -70], [55, -40]] },
+      "waves": { "pitch": 1.1, "roll": 1.8, "heave": 0.25 }, "steerHeel": 0.6, "maxHeel": 6 }
+  ],
+
   "entities": [
     { "type": "door", "portal": "p_entry",       "auto": true },
     { "type": "door", "portal": "p_corr_store",  "auto": true },
@@ -382,7 +390,7 @@
 
     { "type": "light", "pos": [-8, 2.85, 3],   "color": [0.8, 0.85, 1.0], "intensity": 1.8, "radius": 5, "model": "coldLamp" },
     { "type": "light", "pos": [-11, 0.3, 4.8], "color": [1.0, 0.75, 0.45], "intensity": 1.4, "radius": 3.5, "model": "wallLamp" },
-    { "type": "light", "pos": [-13.5, -0.6, 3],"color": [0.8, 0.85, 1.0], "intensity": 1.8, "radius": 5, "model": "coldLamp" },
+    { "type": "light", "pos": [-13.5, -0.6, 3],"color": [0.8, 0.85, 1.0], "intensity": 1.8, "radius": 5 },
 
     { "type": "light", "pos": [-19, -0.6, -3], "color": [0.6, 0.8, 1.0], "intensity": 1.8, "radius": 5, "model": "coldLamp" },
     { "type": "light", "pos": [-19, -0.6, 3],  "color": [0.6, 0.8, 1.0], "intensity": 1.8, "radius": 5, "model": "coldLamp" },
@@ -465,7 +473,7 @@
     { "type": "prop", "model": "crate",  "pos": [-16, -4, -12.8], "rot": 8 },
 
     { "type": "prop", "model": "quay", "pos": [44, 0, 20], "rot": 0 },
-    { "type": "prop", "model": "gantry", "pos": [44, 0.5, 32], "rot": 0 },
+    { "type": "prop", "model": "gantry", "pos": [44, 0.5, 32], "rot": 0, "scale": [1, 1.3, 1] },
     { "type": "prop", "model": "bollard", "pos": [47.3, 0.5, 0], "rot": 0 },
     { "type": "prop", "model": "bollard", "pos": [47.3, 0.5, 20], "rot": 0 },
     { "type": "prop", "model": "bollard", "pos": [47.3, 0.5, 40], "rot": 0 },
@@ -479,15 +487,13 @@
     { "type": "prop", "model": "containerBlue",   "pos": [43, 0.5, 64], "rot": 90 },
     { "type": "prop", "model": "crate",  "pos": [45.5, 0.5, 8], "rot": 12 },
     { "type": "prop", "model": "barrel", "pos": [46.4, 0.5, 9.2], "rot": 0 },
-    { "type": "prop", "model": "jetty",   "pos": [48, 0, 78], "rot": 0 },
-    { "type": "prop", "model": "rowboat", "pos": [60, -1.05, 80.6], "rot": 8 },
     { "type": "light", "pos": [41.7, 4.0, 5],  "color": [1.0, 0.85, 0.6], "intensity": 1.5, "radius": 10 },
     { "type": "light", "pos": [41.7, 4.0, 50], "color": [1.0, 0.85, 0.6], "intensity": 1.5, "radius": 10 },
 
     { "type": "hull", "id": "freighter", "outline": [[49, -6], [50, -8], [60, -8], [61, -6], [61, 52], [58.5, 60], [55, 66], [51.5, 60], [49, 52]],
       "deck": 5, "keel": -5, "inset": 1.2, "band": -0.6, "bulwark": 1.0, "bulwarkGaps": [[48, 10.5, 50, 13.5]],
       "mat": "hullpaint", "bottomMat": "antifouling", "deckMat": "shipdeck" },
-    { "type": "stairs", "from": [49.6, 5, 12], "to": [44.6, 0.5, 12], "width": 1.3, "steps": 14, "open": true, "rails": true, "mat": "steel", "edgeMat": "hazard" },
+    { "type": "stairs", "from": [48.9, 5, 12], "to": [43.9, 0.5, 12], "width": 1.3, "steps": 18, "open": true, "rails": true, "mat": "steel", "edgeMat": "hazard", "vehicle": "freighter", "dockedOnly": true },
     { "type": "prop", "model": "funnel",  "pos": [55, 11, -2.5], "rot": 0 },
     { "type": "prop", "model": "radar",   "pos": [55, 15.2, -2.5], "rot": 0 },
     { "type": "prop", "model": "mast",    "pos": [55, 5, 60], "rot": 0 },
@@ -576,7 +582,7 @@ const MAX_DRAWS = 4096;
 const DRAW_STRIDE = 256;
 const MAX_LINE_VERTS = 120000;
 const MAX_POLY_VERTS = 30000;
-const POLY_FLOATS = 10;          // pos3 normal3 color4
+const POLY_FLOATS = 11;          // pos3 normal3 color4 area
 const MAX_DEPTH = 12;
 const MAX_ENTRIES = 127;         // stencil refs are 7 bits; bit 7 is the "being marked" flag
 const NEAR_PASS = 0.35;          // SECTR: IsPointInHull(cameraPos, maxNearClipDistance)
@@ -602,9 +608,9 @@ const v3 = {
 };
 
 const m4 = {
-    identity() { const m = new Float32Array(16); m[0] = m[5] = m[10] = m[15] = 1; return m; },
+    identity() { const m = new Float64Array(16); m[0] = m[5] = m[10] = m[15] = 1; return m; },
     mul(a, b) {
-        const o = new Float32Array(16);
+        const o = new Float64Array(16);
         for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) {
             let s = 0; for (let k = 0; k < 4; k++) s += a[k * 4 + r] * b[c * 4 + k];
             o[c * 4 + r] = s;
@@ -614,20 +620,20 @@ const m4 = {
     // WebGPU clip space: depth 0..1
     perspective(fovy, aspect, near, far) {
         const f = 1 / Math.tan(fovy / 2), nf = 1 / (near - far);
-        return new Float32Array([f / aspect, 0, 0, 0, 0, f, 0, 0, 0, 0, far * nf, -1, 0, 0, far * near * nf, 0]);
+        return new Float64Array([f / aspect, 0, 0, 0, 0, f, 0, 0, 0, 0, far * nf, -1, 0, 0, far * near * nf, 0]);
     },
     lookAt(eye, target, up) {
         const z = v3.norm(v3.sub(eye, target)), x = v3.norm(v3.cross(up, z)), y = v3.cross(z, x);
-        return new Float32Array([x[0], y[0], z[0], 0, x[1], y[1], z[1], 0, x[2], y[2], z[2], 0,
+        return new Float64Array([x[0], y[0], z[0], 0, x[1], y[1], z[1], 0, x[2], y[2], z[2], 0,
             -v3.dot(x, eye), -v3.dot(y, eye), -v3.dot(z, eye), 1]);
     },
     trs(p, deg = 0, s = 1) {
         const r = deg * Math.PI / 180, c = Math.cos(r), sn = Math.sin(r);
         const [sx, sy, sz] = Array.isArray(s) ? s : [s, s, s];
-        return new Float32Array([c * sx, 0, -sn * sx, 0, 0, sy, 0, 0, sn * sz, 0, c * sz, 0, p[0], p[1], p[2], 1]);
+        return new Float64Array([c * sx, 0, -sn * sx, 0, 0, sy, 0, 0, sn * sz, 0, c * sz, 0, p[0], p[1], p[2], 1]);
     },
     basis(x, y, z, o) {
-        return new Float32Array([x[0], x[1], x[2], 0, y[0], y[1], y[2], 0, z[0], z[1], z[2], 0, o[0], o[1], o[2], 1]);
+        return new Float64Array([x[0], x[1], x[2], 0, y[0], y[1], y[2], 0, z[0], z[1], z[2], 0, o[0], o[1], o[2], 1]);
     },
     point(m, p) {
         return [m[0] * p[0] + m[4] * p[1] + m[8] * p[2] + m[12], m[1] * p[0] + m[5] * p[1] + m[9] * p[2] + m[13], m[2] * p[0] + m[6] * p[1] + m[10] * p[2] + m[14]];
@@ -635,8 +641,12 @@ const m4 = {
     dir(m, p) {
         return [m[0] * p[0] + m[4] * p[1] + m[8] * p[2], m[1] * p[0] + m[5] * p[1] + m[9] * p[2], m[2] * p[0] + m[6] * p[1] + m[10] * p[2]];
     },
+    translate(t) { const m = m4.identity(); m[12] = t[0]; m[13] = t[1]; m[14] = t[2]; return m; },
+    rotX(a) { const c = Math.cos(a), s = Math.sin(a); return new Float64Array([1, 0, 0, 0, 0, c, s, 0, 0, -s, c, 0, 0, 0, 0, 1]); },
+    rotY(a) { const c = Math.cos(a), s = Math.sin(a); return new Float64Array([c, 0, -s, 0, 0, 1, 0, 0, s, 0, c, 0, 0, 0, 0, 1]); },
+    rotZ(a) { const c = Math.cos(a), s = Math.sin(a); return new Float64Array([c, s, 0, 0, -s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]); },
     invert(a) {
-        const o = new Float32Array(16);
+        const o = new Float64Array(16);
         const a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3], a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
         const a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11], a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
         const b00 = a00 * a11 - a01 * a10, b01 = a00 * a12 - a02 * a10, b02 = a00 * a13 - a03 * a10, b03 = a01 * a12 - a02 * a11;
@@ -1049,13 +1059,11 @@ class World {
         this.buildPortalFrames();
         this.buildOutdoor();
         this.spawnEntities();
+        this.vehicles = (this.scn.vehicles || []).map(d => new Vehicle(this, d));
+        this.claimVehicles();
         this.buildTrees();
-        if (this.water) {
-            const [a, , c] = [this.water.verts[0], null, this.water.verts[2]], y = this.water.level;
-            let pieces = [[[a[0], a[2]], [c[0], a[2]], [c[0], c[2]], [a[0], c[2]]]];
-            for (const m of this.waterMasks || []) pieces = g2.subtract(pieces, m);
-            this.water.pieces = pieces.map(pc => pc.map(q => [q[0], y, q[1]]));
-        }
+        this.buildCollision();
+        this.updateWater();
         this.totalTris = this.objects.reduce((s, o) => s + o.chunk.count / 3, 0);
         for (const w of this.warnings) console.warn('[scenario]', w);
     }
@@ -1116,9 +1124,9 @@ class World {
         return this.areaById.get(id);
     }
     // FarCry SetCurAreas / SECTR GetContaining: point query, outdoors when nothing contains it
-    areaAt(p) {
+    areaAt(p0) {
         for (let i = 1; i < this.areas.length; i++) {
-            const a = this.areas[i];
+            const a = this.areas[i], p = a.vehicle ? a.vehicle.toLocal(p0) : p0;
             if (p[1] < a.y || p[1] >= a.top) continue;
             if (p[0] < a.bbox[0] || p[0] > a.bbox[2] || p[2] < a.bbox[1] || p[2] > a.bbox[3]) continue;
             if (g2.inside([p[0], p[2]], a.shape)) return i;
@@ -1304,7 +1312,7 @@ class World {
         parts.forEach((part, k) => {
             const name = parts.length > 1 ? `${info.name}|${this.areas[part.owners[0]].id}` : info.name;
             const chunk = this.pool.add(part.b, Object.assign({}, info, { name, owners: part.owners, lightArea: part.lightArea }));
-            if (chunk) this.objects.push({ name, chunk, min: chunk.min, max: chunk.max, owners: part.owners, lightArea: part.lightArea, model: IDENTITY, stamp: -1 });
+            if (chunk) this.objects.push({ name, chunk, min: chunk.min, max: chunk.max, owners: part.owners, lightArea: part.lightArea, model: IDENTITY, stamp: -1, vehicleId: info.vehicle, dockedOnly: !!info.dockedOnly });
         });
     }
     // does the mesh cross portal P's plane close to its aperture?
@@ -1362,6 +1370,12 @@ class World {
         for (const r of t.flatten || []) dist = Math.min(dist, near(r[0], r[1], r[2], r[3]));
         const f = t.freq || 0.035, mask = smoothstep(t.flat ?? 5, (t.flat ?? 5) + (t.blend ?? 20), dist);
         let h = (fbm(x * f + 11.3, z * f - 3.7) - 0.45) * 2 * (t.amp ?? 2.5) * mask - 0.03;
+        // island: the land sinks into the sea towards the edges of the terrain
+        if (t.island) {
+            const [x0, z0, x1, z1] = t.extent, de = Math.min(x - x0, x1 - x, z - z0, z1 - z);
+            const s = smoothstep(0, t.island.falloff ?? 30, de + (vnoise(x * 0.04, z * 0.04) - 0.5) * 10);
+            h = h * s - (t.island.depth ?? 12) * (1 - s);
+        }
         // coast: the land sinks to the seabed beyond a shore line (point + normal pointing out to sea)
         const c = t.coast;
         if (c) {
@@ -1429,16 +1443,116 @@ class World {
     }
     // outdoor objects -> one quadtree; each indoor area -> its own BVH (SECTR Members may be in several)
     buildTrees() {
-        this.outdoorTree = new QuadTree(this.objects.filter(o => o.owners.includes(0)));
+        this.outdoorTree = new QuadTree(this.objects.filter(o => !o.vehicle && o.owners.includes(0)));
         this.areaTrees = this.areas.map((a, i) => i === 0 ? null : new BVHTree(this.objects.filter(o => o.owners.includes(i))));
+        // a vehicle keeps its outdoor parts (hull, deck gear) in its own tree, in vehicle space
+        for (const veh of this.vehicles) veh.outdoorTree = new BVHTree(veh.objects.filter(o => o.owners.includes(0)));
         this.dynamicByArea = this.areas.map(() => []);
     }
+    // everything authored inside a vehicle's hull (at its docked pose) moves with it
+    claimVehicles() {
+        const segD2 = (x, z, a, b) => {
+            const dx = b[0] - a[0], dz = b[1] - a[1], L2 = dx * dx + dz * dz || 1;
+            const t = Math.max(0, Math.min(1, ((x - a[0]) * dx + (z - a[1]) * dz) / L2));
+            return (x - a[0] - dx * t) ** 2 + (z - a[1] - dz * t) ** 2;
+        };
+        for (const veh of this.vehicles) {
+            const out = veh.hull.outline, keel = veh.hull.keel;
+            const near = (x, z, m) => g2.inside([x, z], out) || out.some((a, i) => segD2(x, z, a, out[(i + 1) % out.length]) < m * m);
+            for (const a of this.areas) if (a.index > 0 && a.shape.every(q => near(q[0], q[1], 0.5))) { a.vehicle = veh; veh.areas.push(a); }
+            for (const P of this.portals) if (P.center[1] > keel && near(P.center[0], P.center[2], 0.5)) {
+                P.vehicle = veh; veh.portals.push(P);
+                P.local = { verts: P.verts.map(v => v.slice()), center: P.center.slice(), normal: P.normal.slice(), right: P.right.slice(), up: P.up.slice() };
+            }
+            for (const a of this.areas) for (const L of a.lights) if (L.pos[1] > keel && near(L.pos[0], L.pos[2], 0.5)) { L.vehicle = veh; L.local = L.pos.slice(); veh.lights.push(L); }
+            for (const o of this.objects) {
+                if (/^terrain:|^seabed/.test(o.name)) continue;
+                const tagged = o.vehicleId && (o.vehicleId === veh.id || o.vehicleId === veh.hull.id);
+                const inside = o.min[1] > keel - 1 && [[o.min[0], o.min[2]], [o.max[0], o.min[2]], [o.max[0], o.max[2]], [o.min[0], o.max[2]]].every(q => near(q[0], q[1], 1.0));
+                if (!tagged && !inside) continue;
+                o.vehicle = veh; o.model = veh.M; veh.objects.push(o);
+            }
+            veh.place();
+        }
+    }
+    // walkable floors and wall segments from the scene triangles (terrain uses terrainHeight)
+    buildCollision() {
+        this.col = new CollisionSet(2);
+        const pv = this.pool.vdata, pi = this.pool.idata, V = i => [pv[i * 7], pv[i * 7 + 1], pv[i * 7 + 2]];
+        for (const o of this.objects) {
+            if (/^terrain:|^seabed|^prop:(ceilingLamp|coldLamp|wallLamp|bulb|redBeacon)/.test(o.name)) continue;   // light fixtures are not solid
+            const set = o.vehicle ? (o.dockedOnly ? o.vehicle.dockCol : o.vehicle.col) : this.col, c = o.chunk;
+            for (let k = 0; k < c.count; k += 3) set.addTri(V(c.baseVertex + pi[c.first + k]), V(c.baseVertex + pi[c.first + k + 1]), V(c.baseVertex + pi[c.first + k + 2]));
+        }
+        this.ladders = this.objects.filter(o => o.name.startsWith('prop:ladder'));
+    }
+    // highest walkable surface under p that is at most `step` above its feet
+    groundAt(p, step) {
+        const maxY = p[1] + step;
+        let best = { y: -Infinity, support: null };
+        const th = this.terrainHeight(p[0], p[2]);
+        if (th <= maxY && this.areaAt([p[0], th + 0.1, p[2]]) === 0) best.y = th;     // no terrain inside buildings
+        const gw = this.col.ground(p[0], p[2], maxY);
+        if (gw > best.y) best = { y: gw, support: null };
+        for (const veh of this.vehicles) {
+            const l = veh.toLocal(p);
+            let gl = veh.col.ground(l[0], l[2], l[1] + step);
+            if (veh.docked) gl = Math.max(gl, veh.dockCol.ground(l[0], l[2], l[1] + step));
+            if (gl > -Infinity) { const y = veh.toWorld([l[0], gl, l[2]])[1]; if (y > best.y) best = { y, support: veh }; }
+        }
+        for (const d of this.dynamic) {                                     // closed hatch covers can be stood on
+            if (d.type !== 'door' || !d.portal.horizontal || d.open > 0.7) continue;
+            const P = d.portal, r = v3.sub(p, P.center), y = P.center[1] + 0.05;
+            if (Math.abs(v3.dot(r, P.right)) < P.w / 2 && Math.abs(v3.dot(r, P.up)) < P.h / 2 && y <= maxY && y > best.y) best = { y, support: P.vehicle || null };
+        }
+        return best;
+    }
+    // push a player cylinder (radius r, from feet+lo to feet+hi) out of walls, hulls and closed doors
+    collide(p, r, lo, hi) {
+        this.col.pushOut(p, r, p[1] + lo, p[1] + hi);
+        for (const veh of this.vehicles) {
+            const l = veh.toLocal(p);
+            veh.col.pushOut(l, r, l[1] + lo, l[1] + hi);
+            if (veh.docked) veh.dockCol.pushOut(l, r, l[1] + lo, l[1] + hi);
+            const q = veh.toWorld(l); p[0] = q[0]; p[2] = q[2];
+        }
+        for (const d of this.dynamic) {
+            if (d.type !== 'door' || d.portal.horizontal || d.open > 0.7) continue;
+            const P = d.portal, a = P.verts[0], b = P.verts[1];
+            if (Math.abs(p[0] - P.center[0]) > P.w + 2 || Math.abs(p[2] - P.center[2]) > P.w + 2) continue;
+            pushSeg(p, r, p[1] + lo, p[1] + hi, { x0: a[0], z0: a[2], x1: b[0], z1: b[2], y0: P.center[1] - P.h / 2, y1: P.center[1] + P.h / 2 });
+        }
+    }
+    ladderAt(p, r) {
+        for (const o of this.ladders) {
+            if (o.dockedOnly && !o.vehicle.docked) continue;
+            const q = o.vehicle ? o.vehicle.toLocal(p) : p, m = r + 0.15;
+            if (q[0] > o.min[0] - m && q[0] < o.max[0] + m && q[2] > o.min[2] - m && q[2] < o.max[2] + m && q[1] > o.min[1] - 0.3 && q[1] < o.max[1] + 0.2)
+                return { o, top: o.vehicle ? o.vehicle.toWorld([q[0], o.max[1], q[2]])[1] : o.max[1] };
+        }
+        return null;
+    }
+    // sea surface = water quad minus the waterline of every hull (moving hulls cut a moving hole)
+    updateWater() {
+        if (!this.water) return;
+        const a = this.water.verts[0], c = this.water.verts[2], y = this.water.level;
+        let pieces = [[[a[0], a[2]], [c[0], a[2]], [c[0], c[2]], [a[0], c[2]]]];
+        for (const h of this.hullDefs || []) {
+            const veh = this.vehicles.find(v => v.hull === h);
+            pieces = g2.subtract(pieces, veh ? veh.waterline() : h.waterline);
+        }
+        this.water.pieces = pieces.map(pc => pc.map(q => [q[0], y, q[1]]));
+    }
+    // 2D footprint of an area in world space (vehicle areas move)
+    areaShape2D(a) { return a.vehicle ? a.shape.map(q => { const r = a.vehicle.toWorld([q[0], a.y, q[1]]); return [r[0], r[2]]; }) : a.shape; }
     update(dt, t, actors) {
         this.time = t;
+        for (const veh of this.vehicles) veh.update(dt, t);
         const all = actors.concat(this.dynamic.filter(d => d.type === 'drone').map(d => d.pos));
         for (const ent of this.dynamic) ent.update(this, dt, t, all);
         for (const list of this.dynamicByArea) list.length = 0;
         for (const ent of this.dynamic) for (const o of ent.owners) this.dynamicByArea[o].push(ent);
+        this.updateWater();
     }
     // per-area lighting table (static lights + dynamic lights of the frame)
     areaTable(t) {
@@ -1472,6 +1586,7 @@ class World {
                 const P = this.portals[pi];
                 if (!this.navigable(P)) continue;
                 const v = P.front === u ? P.back : P.front, pp = this.portalPoint(P);
+                if (this.areas[v].vehicle || this.areas[u].vehicle) continue;
                 if (!this.areas[v].nav) continue;
                 const cost = dist[u] + v3.dist(this.areas[u].hub, pp) + v3.dist(pp, this.areas[v].hub);
                 if (cost < dist[v]) { dist[v] = cost; prev[v] = { area: u, portal: P }; }
@@ -1482,6 +1597,184 @@ class World {
         for (let a = to; a !== from; a = prev[a].area) path.unshift({ area: a, portal: prev[a].portal });
         return path;
     }
+}
+
+// ------------------------------------------------------------------------------------------
+// CollisionSet: walkable floors (triangles) and walls (XZ segments with a height range) taken
+// from the scene triangles, hashed on a 2D grid. Vehicles keep their own set in vehicle space.
+// ------------------------------------------------------------------------------------------
+function pushSeg(p, r, lo, hi, s) {
+    if (s.y1 <= lo || s.y0 >= hi) return;
+    const dx = s.x1 - s.x0, dz = s.z1 - s.z0, L2 = dx * dx + dz * dz;
+    const t = Math.max(0, Math.min(1, ((p[0] - s.x0) * dx + (p[2] - s.z0) * dz) / L2));
+    const qx = s.x0 + dx * t, qz = s.z0 + dz * t;
+    let ex = p[0] - qx, ez = p[2] - qz;
+    const d = Math.hypot(ex, ez);
+    if (d >= r) return;
+    if (d < 1e-6) { const L = Math.sqrt(L2); ex = -dz / L; ez = dx / L; } else { ex /= d; ez /= d; }
+    p[0] = qx + ex * r; p[2] = qz + ez * r;
+}
+class CollisionSet {
+    constructor(cell = 2) { this.cell = cell; this.floors = new Map(); this.walls = new Map(); this.nFloors = 0; this.nWalls = 0; }
+    key(x, z) { return Math.floor(x / this.cell) * 100003 + Math.floor(z / this.cell); }
+    each(x0, z0, x1, z1, fn) {
+        const c = this.cell;
+        for (let i = Math.floor(x0 / c); i <= Math.floor(x1 / c); i++) for (let j = Math.floor(z0 / c); j <= Math.floor(z1 / c); j++) fn(i * 100003 + j);
+    }
+    put(map, k, item) { let l = map.get(k); if (!l) map.set(k, l = []); l.push(item); }
+    addTri(a, b, c) {
+        const n = v3.cross(v3.sub(b, a), v3.sub(c, a)), l = v3.len(n);
+        if (l < 1e-8) return;
+        const ny = n[1] / l;
+        if (ny > 0.55) {
+            const f = { a, b, c };
+            this.each(Math.min(a[0], b[0], c[0]), Math.min(a[2], b[2], c[2]), Math.max(a[0], b[0], c[0]), Math.max(a[2], b[2], c[2]), k => this.put(this.floors, k, f));
+            this.nFloors++;
+        } else if (Math.abs(ny) < 0.55) {
+            const h = Math.hypot(n[0], n[2]), nx = n[0] / h, nz = n[2] / h, tx = -nz, tz = nx;
+            let s0 = Infinity, s1 = -Infinity, o = 0, y0 = Infinity, y1 = -Infinity;
+            for (const q of [a, b, c]) { const t = q[0] * tx + q[2] * tz; s0 = Math.min(s0, t); s1 = Math.max(s1, t); o += (q[0] * nx + q[2] * nz) / 3; y0 = Math.min(y0, q[1]); y1 = Math.max(y1, q[1]); }
+            if (s1 - s0 < 1e-3) return;
+            const seg = { x0: tx * s0 + nx * o, z0: tz * s0 + nz * o, x1: tx * s1 + nx * o, z1: tz * s1 + nz * o, y0, y1 }, m = 0.5;
+            this.each(Math.min(seg.x0, seg.x1) - m, Math.min(seg.z0, seg.z1) - m, Math.max(seg.x0, seg.x1) + m, Math.max(seg.z0, seg.z1) + m, k => this.put(this.walls, k, seg));
+            this.nWalls++;
+        }
+    }
+    ground(x, z, maxY) {
+        const l = this.floors.get(this.key(x, z));
+        let best = -Infinity;
+        if (l) for (const { a, b, c } of l) {
+            const d = (b[2] - c[2]) * (a[0] - c[0]) + (c[0] - b[0]) * (a[2] - c[2]);
+            if (Math.abs(d) < 1e-9) continue;
+            const w0 = ((b[2] - c[2]) * (x - c[0]) + (c[0] - b[0]) * (z - c[2])) / d, w1 = ((c[2] - a[2]) * (x - c[0]) + (a[0] - c[0]) * (z - c[2])) / d, w2 = 1 - w0 - w1;
+            if (w0 < -1e-4 || w1 < -1e-4 || w2 < -1e-4) continue;
+            const y = w0 * a[1] + w1 * b[1] + w2 * c[1];
+            if (y <= maxY && y > best) best = y;
+        }
+        return best;
+    }
+    pushOut(p, r, lo, hi) {
+        const l = this.walls.get(this.key(p[0], p[2]));
+        if (l) for (let it = 0; it < 2; it++) for (const s of l) pushSeg(p, r, lo, hi, s);
+    }
+}
+
+// ------------------------------------------------------------------------------------------
+// Vehicle: a moving group of areas, portals, objects and lights (the freighter). Everything is
+// authored at the docked pose, which is the vehicle's local space; each frame one transform M
+// carries it along its route, with heel from steering and pitch / roll / heave from the waves.
+// Visibility queries transform the frustum planes into vehicle space instead of moving trees.
+// ------------------------------------------------------------------------------------------
+class Vehicle {
+    constructor(world, d) {
+        this.world = world; this.id = d.id; this.data = d;
+        this.hull = (world.hullDefs || []).find(h => h.id === (d.hull || d.id));
+        if (!this.hull) throw new Error(`vehicle "${d.id}": no hull "${d.hull || d.id}"`);
+        this.pivot = d.pivot || [0, 0, 0];
+        this.M = m4.identity(); this.inv = m4.identity();
+        this.col = new CollisionSet(2); this.dockCol = new CollisionSet(2);
+        this.objects = []; this.lights = []; this.portals = []; this.areas = [];
+        // closed Catmull-Rom route through the pivot waypoints, sampled by arc length
+        const P = d.route.points, n = P.length, steps = 64;
+        this.points = P; this.steps = steps;
+        this.samples = [];
+        for (let i = 0; i < n; i++) for (let k = 0; k < steps; k++) this.samples.push({ p: this.cr(i, k / steps), i, t: k / steps, s: 0 });
+        let L = 0;
+        this.samples.forEach((sm, i) => { if (i) L += Math.hypot(sm.p[0] - this.samples[i - 1].p[0], sm.p[1] - this.samples[i - 1].p[1]); sm.s = L; });
+        const first = this.samples[0].p, last = this.samples[this.samples.length - 1].p;
+        this.length = L + Math.hypot(first[0] - last[0], first[1] - last[1]);
+        this.sDock = this.samples[(d.route.dock || 0) * steps].s;
+        this.s = this.sDock; this.v = 0; this.state = 'docked'; this.docked = true; this.wait = d.route.wait ?? 25;
+        this.heading = 0; this.dHeading = 0; this.heel = 0; this.pitch = 0; this.roll = 0;
+    }
+    // Catmull-Rom segment i at parameter t (and its derivative): smooth position and direction
+    cr(i, t, deriv = false) {
+        const P = this.points, n = P.length, p0 = P[(i - 1 + n) % n], p1 = P[i], p2 = P[(i + 1) % n], p3 = P[(i + 2) % n];
+        const t2 = t * t, t3 = t2 * t;
+        const f = deriv
+            ? (a, b, c, e) => 0.5 * ((-a + c) + 2 * (2 * a - 5 * b + 4 * c - e) * t + 3 * (-a + 3 * b - 3 * c + e) * t2)
+            : (a, b, c, e) => 0.5 * (2 * b + (-a + c) * t + (2 * a - 5 * b + 4 * c - e) * t2 + (-a + 3 * b - 3 * c + e) * t3);
+        return [f(p0[0], p1[0], p2[0], p3[0]), f(p0[1], p1[1], p2[1], p3[1])];
+    }
+    // arc length -> spline parameter through the sample table, then evaluate the spline itself
+    param(s) {
+        s = ((s % this.length) + this.length) % this.length;
+        const S = this.samples;
+        let lo = 0, hi = S.length - 1;
+        while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (S[mid].s <= s) lo = mid; else hi = mid - 1; }
+        const a = S[lo], sb = lo + 1 < S.length ? S[lo + 1].s : this.length;
+        return { i: a.i, t: a.t + (s - a.s) / Math.max(1e-6, sb - a.s) / this.steps };
+    }
+    at(s) { const q = this.param(s); return this.cr(q.i, q.t); }
+    dir(s) { const q = this.param(s); return this.cr(q.i, q.t, true); }
+    toLocal(p) { return m4.point(this.inv, p); }
+    toWorld(p) { return m4.point(this.M, p); }
+    // world planes -> vehicle planes (R orthonormal: n' = R^T n, d' = n.t + d)
+    localPlanes(planes) {
+        const M = this.M;
+        return planes.map(q => [M[0] * q[0] + M[1] * q[1] + M[2] * q[2], M[4] * q[0] + M[5] * q[1] + M[6] * q[2], M[8] * q[0] + M[9] * q[1] + M[10] * q[2], M[12] * q[0] + M[13] * q[1] + M[14] * q[2] + q[3]]);
+    }
+    update(dt, t) {
+        const R = this.data.route, cruise = R.speed || 6, acc = R.accel || 0.3;
+        if (this.state === 'docked') {
+            this.v = 0;
+            if ((this.wait -= dt) <= 0) { this.state = 'departing'; this.travelled = 0; }
+        } else {
+            const ahead = ((this.sDock - this.s) % this.length + this.length) % this.length;
+            if (this.state === 'departing' && this.travelled > 10) this.state = 'cruising';
+            const brake = this.state === 'cruising' ? Math.sqrt(2 * acc * 1.2 * ahead) : Infinity;
+            this.v += Math.max(-acc * 1.5 * dt, Math.min(acc * dt, Math.min(cruise, brake) - this.v));
+            if (this.state === 'cruising') this.v = Math.min(this.v, ahead / Math.max(dt, 1e-4));      // never overshoot the dock
+            this.s += this.v * dt;
+            this.travelled += this.v * dt;
+            if (this.state === 'cruising' && ahead < 0.002 && this.v < 0.2) { this.state = 'docked'; this.s = this.sDock; this.v = 0; this.wait = R.wait ?? 25; }
+        }
+        this.docked = this.state === 'docked';
+        const p = this.at(this.s), tg = this.dir(this.s);
+        // the hull yaws toward the path tangent through a critically damped spring: turn rate and
+        // angular acceleration stay continuous even where the spline's curvature jumps at waypoints
+        const target = Math.atan2(tg[0], tg[1]), k = this.data.yawResponse ?? 2.5;
+        const err = Math.atan2(Math.sin(target - this.heading), Math.cos(target - this.heading));
+        this.yawRate = (this.yawRate || 0) + (k * k * err - 2 * k * (this.yawRate || 0)) * dt;
+        const dh = this.yawRate * dt, heading = this.heading + dh;
+        this.dHeading = dh; this.heading = heading;
+        const W = this.data.waves || {}, deg = Math.PI / 180, yawRate = dt > 0 ? dh / dt : 0;
+        // heel away from the turn with a slow spring, plus wave pitch / roll / heave
+        const heelTarget = Math.max(-1, Math.min(1, -yawRate * this.v * (this.data.steerHeel ?? 0.6))) * (this.data.maxHeel ?? 6) * deg;
+        this.heel += (heelTarget - this.heel) * Math.min(1, dt * 0.7);
+        const ampTarget = this.docked ? 0.08 : 0.35 + 0.65 * Math.min(1, this.v / cruise);  // calm in harbour
+        this.amp = this.amp === undefined ? ampTarget : this.amp + (ampTarget - this.amp) * Math.min(1, dt * 0.4);
+        const amp = this.amp;
+        this.pitch = amp * (W.pitch ?? 1.2) * deg * (Math.sin(t * 0.55) + 0.5 * Math.sin(t * 0.93 + 1.3));
+        this.roll = this.heel + amp * (W.roll ?? 2) * deg * (Math.sin(t * 0.41 + 0.7) + 0.4 * Math.sin(t * 1.07));
+        const heave = amp * (W.heave ?? 0.25) * (Math.sin(t * 0.63) + 0.5 * Math.sin(t * 1.21 + 2)), pv = this.pivot;
+        const M = m4.mul(m4.mul(m4.mul(m4.mul(m4.translate([p[0], pv[1] + heave, p[1]]), m4.rotY(heading)), m4.rotX(-this.pitch)), m4.rotZ(this.roll)), m4.translate([-pv[0], -pv[1], -pv[2]]));
+        this.M.set(M); this.inv.set(m4.invert(M));
+        this.place();
+    }
+    // move the vehicle's portals, lights and object bounds to its current pose
+    place() {
+        const M = this.M;
+        for (const P of this.portals) {
+            const l = P.local;
+            P.verts = l.verts.map(v => m4.point(M, v));
+            P.center = m4.point(M, l.center);
+            P.normal = v3.norm(m4.dir(M, l.normal)); P.right = v3.norm(m4.dir(M, l.right)); P.up = v3.norm(m4.dir(M, l.up));
+            P.d = -v3.dot(P.normal, P.center);
+            P.min = [0, 1, 2].map(k => Math.min(...P.verts.map(v => v[k])));
+            P.max = [0, 1, 2].map(k => Math.max(...P.verts.map(v => v[k])));
+        }
+        for (const L of this.lights) L.pos = m4.point(M, L.local);
+        for (const o of this.objects) {
+            const mn = [Infinity, Infinity, Infinity], mx = [-Infinity, -Infinity, -Infinity];
+            for (let i = 0; i < 8; i++) {
+                const q = m4.point(M, [i & 1 ? o.max[0] : o.min[0], i & 2 ? o.max[1] : o.min[1], i & 4 ? o.max[2] : o.min[2]]);
+                for (let k = 0; k < 3; k++) { mn[k] = Math.min(mn[k], q[k]); mx[k] = Math.max(mx[k], q[k]); }
+            }
+            o.wmin = mn; o.wmax = mx;
+        }
+    }
+    waterline() { return this.hull.waterline.map(q => { const w = m4.point(this.M, [q[0], this.world.water.level, q[1]]); return [w[0], w[2]]; }); }
 }
 
 // Entity types: each takes (world, data) and registers static objects or dynamic entities
@@ -1528,7 +1821,7 @@ const ENTITY_TYPES = {
                 for (let k = 0; k <= 4; k++) b.box(v3.madd(v3.madd(v3.lerp(f, t, k / 4), side, sgn * hw), [0, 1, 0], 0.5), AXES, [0.025, 0.5, 0.025], mr);
             }
         }
-        world.addStatic(b, { name: 'stairs', owners: world.areasOverlapping(b.min, b.max), lightArea: world.areaAt(v3.madd(t, [0, 1, 0], 0.5)) });
+        world.addStatic(b, { name: 'stairs', owners: world.areasOverlapping(b.min, b.max), lightArea: world.areaAt(v3.madd(t, [0, 1, 0], 0.5)), vehicle: e.vehicle, dockedOnly: e.dockedOnly });
     },
     // ship hull extruded from its deck outline: sides taper toward the keel, antifouling band below the
     // paint line, deck = outline minus the roofs of the interior areas under it, bulwark with gaps
@@ -1567,9 +1860,8 @@ const ENTITY_TYPES = {
             if (Math.abs(A.top - deck) < 0.01) for (const t of g2.triangulate(A.shape)) top = g2.subtract(top, t);
         }
         for (const p of top) b.poly(p.map(q => [q[0], deck, q[1]]), [0, 1, 0], mDeck);
-        world.addStatic(b, { name: `hull:${e.id || 'ship'}`, owners: [0], lightArea: 0 });
-        (world.hulls ||= []).push(out);
-        if (world.water) (world.waterMasks ||= []).push(out.map((_, i) => { const q = at(i, world.water.level); return [q[0], q[2]]; }));
+        world.addStatic(b, { name: `hull:${e.id || 'ship'}`, owners: [0], lightArea: 0, vehicle: e.id || 'ship' });
+        (world.hullDefs ||= []).push({ id: e.id || 'ship', outline: out, keel, deck, waterline: world.water ? out.map((_, i) => { const q = at(i, world.water.level); return [q[0], q[2]]; }) : [] });
     },
     // SECTR_Door: manages the Closed flag of its portal; auto doors open for nearby actors
     door(world, e) {
@@ -1597,7 +1889,7 @@ const ENTITY_TYPES = {
         const ent = {
             type: 'door', portal: P, auto: !!e.auto, lift: e.lift || 0,
             // slide direction in the portal frame: right | left | up | down
-            slide: { right: [P.right, P.w], left: [v3.mul(P.right, -1), P.w], up: [P.up, P.h], down: [v3.mul(P.up, -1), P.h] }[e.slide || 'right'], radius: e.radius || 3.2, delay: e.delay ?? 1.2, hold: 0,
+            slide: e.slide || 'right', radius: e.radius || 3.2, delay: e.delay ?? 1.2, hold: 0,
             open: startOpen ? 1 : 0, target: startOpen ? 1 : 0, speed: e.speed || (e.auto ? 2.6 : 1.4), stamp: -1,
             owners: [], lightArea: P.front || P.back, model: IDENTITY,
             toggle() { if (P.locked) return 'locked'; if (this.auto) return 'auto'; this.target = this.target > 0.5 ? 0 : 1; return 'ok'; },
@@ -1612,7 +1904,8 @@ const ENTITY_TYPES = {
                 P.closed = this.open < 0.02;
                 const ease = this.open * this.open * (3 - 2 * this.open);
                 const lift = this.lift * Math.min(1, this.open * 4);
-                this.model = m4.basis(P.right, P.up, P.normal, v3.madd(v3.madd(P.center, this.slide[0], this.slide[1] * 0.97 * ease), P.normal, lift));
+                const sd = { right: [P.right, P.w], left: [v3.mul(P.right, -1), P.w], up: [P.up, P.h], down: [v3.mul(P.up, -1), P.h] }[this.slide];
+                this.model = m4.basis(P.right, P.up, P.normal, v3.madd(v3.madd(P.center, sd[0], sd[1] * 0.97 * ease), P.normal, lift));
             },
         };
         ent.update(world, 0, 0, []);
@@ -1838,6 +2131,7 @@ struct VOut {
     @location(1) nrm: vec3f,
     @location(2) lpos: vec3f,
     @location(3) @interpolate(flat) mat: u32,
+    @location(4) lnrm: vec3f,
 };
 
 @vertex fn vs(@location(0) p: vec3f, @location(1) n: vec3f, @location(2) m: u32) -> VOut {
@@ -1847,6 +2141,7 @@ struct VOut {
     o.wpos = w.xyz;
     o.nrm = (D.model * vec4f(n, 0.0)).xyz;
     o.lpos = p;
+    o.lnrm = n;
     o.mat = m;
     return o;
 }
@@ -1913,7 +2208,7 @@ fn surface(m: Material, lp: vec3f, n: vec3f) -> vec4f {
     let m = mats[i.mat];
     let ai = u32(D.info.x);
     let N = normalize(i.nrm);
-    let s = surface(m, i.lpos, N);
+    let s = surface(m, i.lpos, normalize(i.lnrm));
     let albedo = s.rgb * D.tint.rgb;
     let V = normalize(G.eye.xyz - i.wpos);
     var col = albedo * areas[ai].ambient.rgb * (0.7 + 0.3 * N.y);
@@ -1960,12 +2255,22 @@ struct SOut { @builtin(position) pos: vec4f, @location(0) ndc: vec2f };
 
 // portal polygons (stencil marks) and glass panes share one vertex layout: pos3 normal3 color4
 const WGSL_POLY = WGSL_COMMON + /* wgsl */`
-struct POut { @builtin(position) pos: vec4f, @location(0) wpos: vec3f, @location(1) nrm: vec3f, @location(2) col: vec4f };
-@vertex fn vs(@location(0) p: vec3f, @location(1) n: vec3f, @location(2) c: vec4f) -> POut {
+struct POut { @builtin(position) pos: vec4f, @location(0) wpos: vec3f, @location(1) nrm: vec3f, @location(2) col: vec4f, @location(3) @interpolate(flat) area: f32 };
+@vertex fn vs(@location(0) p: vec3f, @location(1) n: vec3f, @location(2) c: vec4f, @location(3) a: f32) -> POut {
     var o: POut;
     o.pos = G.viewProj * vec4f(p, 1.0);
-    o.wpos = p; o.nrm = n; o.col = c;
+    o.wpos = p; o.nrm = n; o.col = c; o.area = a;
     return o;
+}
+// fog of the area in front of a portal, over the distance from the eye to the portal surface
+fn portalFog(i: POut) -> vec4f {
+    let ai = u32(i.area + 0.5);
+    return vec4f(areas[ai].fog.rgb, 1.0 - exp(-length(G.eye.xyz - i.wpos) * areas[ai].fog.w));
+}
+// veil over an open portal: what is seen through it is fogged by the air in front of it
+@fragment fn fsVeil(i: POut) -> @location(0) vec4f {
+    let f = portalFog(i);
+    return vec4f(tonemap(f.rgb), f.a);
 }
 @fragment fn fsMark(i: POut) -> @location(0) vec4f { return vec4f(0.0); }
 fn waveH(q: vec2f, t: f32) -> f32 {
@@ -2003,7 +2308,11 @@ fn waveH(q: vec2f, t: f32) -> f32 {
     let smudge = smoothstep(0.45, 0.9, fbm(q * 2.5)) * 0.35 + smoothstep(0.7, 1.0, vnoise(vec2f(q.x * 30.0, q.y * 1.5))) * 0.15;
     let col = mix(i.col.rgb * 0.35, refl, 0.35 + 0.65 * fres) + vec3f(smudge * 0.25);
     let a = clamp(i.col.a + fres * 0.55 + smudge * 0.25, 0.0, 0.92);
-    return vec4f(tonemap(col), a);
+    // fog in front of the pane covers both the glass and what is behind it:
+    // out = mix(mix(dst, glass, a), fog, f)  ->  src = (glass*a*(1-f) + fog*f) / A,  A = a*(1-f) + f
+    let f = portalFog(i);
+    let A = a * (1.0 - f.a) + f.a;
+    return vec4f(tonemap((col * a * (1.0 - f.a) + f.rgb * f.a) / max(A, 1e-4)), A);
 }
 `;
 
@@ -2095,6 +2404,7 @@ class Renderer {
         const polyMod = device.createShaderModule({ code: WGSL_POLY });
         const polyVB = [{ arrayStride: POLY_FLOATS * 4, attributes: [
             { shaderLocation: 0, offset: 0, format: 'float32x3' }, { shaderLocation: 1, offset: 12, format: 'float32x3' }, { shaderLocation: 2, offset: 24, format: 'float32x4' },
+            { shaderLocation: 3, offset: 40, format: 'float32' },
         ] }];
         const mark = ds => device.createRenderPipeline({
             layout: baseLayout,
@@ -2121,6 +2431,14 @@ class Renderer {
         });
         this.waterStencil = water(true);
         this.waterPlain = water(false);
+        this.veilPipe = device.createRenderPipeline({
+            layout: baseLayout,
+            vertex: { module: polyMod, entryPoint: 'vs', buffers: polyVB },
+            fragment: { module: polyMod, entryPoint: 'fsVeil', targets: [{ format: this.format, blend }] },
+            primitive: { topology: 'triangle-list', cullMode: 'none' },
+            depthStencil: depthState({ compare: 'less-equal' }),
+            multisample: ms,
+        });
         this.glassPipe = device.createRenderPipeline({
             layout: baseLayout,
             vertex: { module: polyMod, entryPoint: 'vs', buffers: polyVB },
@@ -2236,7 +2554,8 @@ class Renderer {
                     pass.draw(c.count, 1, c.first);
                     break;
                 case 'glass':
-                    use(this.glassPipe, this.polyBuf);
+                case 'veil':
+                    use(c.op === 'glass' ? this.glassPipe : this.veilPipe, this.polyBuf);
                     pass.draw(c.count, 1, c.first);
                     break;
             }
@@ -2268,27 +2587,32 @@ let frameStamp = 0;
 function buildFrame(vis, mode, W, H) {
     const w = app.world, full = [0, 0, W, H], stamp = ++frameStamp;
     const cmds = [], objs = [], polys = [];
-    const st = { outNodes: 0, outObjs: 0, inNodes: 0, inObjs: 0, occluded: 0, marks: 0, refs: 1, glass: 0, water: 0 };
+    const st = { outNodes: 0, outObjs: 0, inNodes: 0, inObjs: 0, occluded: 0, marks: 0, refs: 1, glass: 0, water: 0, veils: 0 };
     const slot = o => {
         if (o.stamp !== stamp) { o.stamp = stamp; o.slot = objs.length; o.rect = null; objs.push(o); }
         return o.slot;
     };
-    const occluded = o => vis.occluders.length && vis.occluders.some(oc => aabbContained(o.min, o.max, oc.planes));
+    const occluded = o => vis.occluders.length && vis.occluders.some(oc => aabbContained(o.wmin || o.min, o.wmax || o.max, oc.planes));
     // query the tree of the entry's area only (outdoor quadtree or the area's BVH + its dynamic members)
     const collect = e => {
         const out = [];
         if (e.skyOnly) return out;
         const counter = { nodes: 0, objs: 0 };
-        const visit = o => { if (occluded(o)) st.occluded++; else out.push(o); };
-        if (e.area === 0) w.outdoorTree.query(e.planes, visit, counter);
-        else w.areaTrees[e.area].query(e.planes, visit, counter);
+        const visit = o => { if (o.dockedOnly && !o.vehicle.docked) return; if (occluded(o)) st.occluded++; else out.push(o); };
+        if (e.area === 0) {
+            w.outdoorTree.query(e.planes, visit, counter);
+            for (const veh of w.vehicles) veh.outdoorTree.query(veh.localPlanes(e.planes), visit, counter);   // vehicle space
+        } else {
+            const veh = w.areas[e.area].vehicle;
+            w.areaTrees[e.area].query(veh ? veh.localPlanes(e.planes) : e.planes, visit, counter);
+        }
         for (const d of w.dynamicByArea[e.area]) { counter.objs++; if (aabbVisible(d.min, d.max, e.planes)) visit(d); }
         if (e.area === 0) { st.outNodes += counter.nodes; st.outObjs += counter.objs; } else { st.inNodes += counter.nodes; st.inObjs += counter.objs; }
         return out;
     };
-    const addPoly = (pts, n, c) => {
+    const addPoly = (pts, n, c, area = 0) => {
         const first = polys.length / POLY_FLOATS;
-        for (let k = 1; k < pts.length - 1; k++) for (const p of [pts[0], pts[k], pts[k + 1]]) polys.push(p[0], p[1], p[2], n[0], n[1], n[2], c[0], c[1], c[2], c[3]);
+        for (let k = 1; k < pts.length - 1; k++) for (const p of [pts[0], pts[k], pts[k + 1]]) polys.push(p[0], p[1], p[2], n[0], n[1], n[2], c[0], c[1], c[2], c[3], area);
         return { first, count: polys.length / POLY_FLOATS - first };
     };
     const addPolys = (list, n, c) => {
@@ -2297,6 +2621,11 @@ function buildFrame(vis, mode, W, H) {
         return { first, count: polys.length / POLY_FLOATS - first };
     };
 
+    // after what lies behind a portal is drawn: its glass pane, or a fog veil if the air in front is foggy
+    const portalCover = (P, pts, area, rect) => {
+        if (P.glass) { cmds.push(Object.assign({ op: 'glass', rect }, addPoly(pts, P.normal, P.glass, area))); st.glass++; }
+        else if (w.areas[area].fog[3] > 0) { cmds.push(Object.assign({ op: 'veil', rect }, addPoly(pts, P.normal, [0, 0, 0, 0], area))); st.veils++; }
+    };
     if (mode === 'stencil') {
         let nextRef = 1;
         const walk = e => {
@@ -2310,7 +2639,7 @@ function buildFrame(vis, mode, W, H) {
                     st.marks++;
                 }
                 walk(c);
-                if (c.via.glass && !c.share) { cmds.push(Object.assign({ op: 'glass', rect: c.rect }, addPoly(c.clipped, c.via.normal, c.via.glass))); st.glass++; }
+                if (!c.share) portalCover(c.via, c.clipped, e.area, c.rect);
             }
             // water last: it blends over this outdoor entry only (children already own their stencil refs)
             if (e.area === 0 && w.water && !e.skyOnly && aabbVisible(w.water.min, w.water.max, e.planes)) {
@@ -2330,9 +2659,9 @@ function buildFrame(vis, mode, W, H) {
             cmds.push(Object.assign({ op: 'water', ref: 0, rect: mode === 'scissor' ? r : full }, addPolys(w.water.pieces, [0, 1, 0], w.water.color)));
             st.water++;
         }
-        const panes = [...new Set(vis.entries.filter(e => e.via && e.via.glass && !e.share).map(e => e.via))];
-        panes.sort((a, b) => v3.dist(b.center, vis.eye) - v3.dist(a.center, vis.eye));
-        for (const P of panes) { cmds.push(Object.assign({ op: 'glass', rect: full }, addPoly(P.verts, P.normal, P.glass))); st.glass++; }
+        const seen = [...new Set(vis.entries.filter(e => e.via && !e.share).map(e => e.via))];
+        seen.sort((a, b) => v3.dist(b.center, vis.eye) - v3.dist(a.center, vis.eye));
+        for (const P of seen) portalCover(P, P.verts, v3.dot(P.normal, vis.eye) + P.d < 0 ? P.front : P.back, full);
     }
     return { cmds, objs, polys: new Float32Array(polys), stats: st };
 }
@@ -2346,7 +2675,8 @@ const MODES = ['stencil', 'scissor', 'none'];
 const app = {
     renderer: new Renderer(), world: null, vis: null, frozen: null,
     cam: { pos: [0, 1.7, -16], yaw: Math.PI, pitch: 0, fov: 70 * Math.PI / 180 },
-    opts: { culling: true, freeze: false, mode: 'stencil', portals: true, volumes: false, map: true, help: true, occluders: true },
+    opts: { culling: true, freeze: false, mode: 'stencil', portals: true, volumes: false, map: true, help: true, occluders: true, walk: true, island: false },
+    player: null,
     keys: new Set(), stats: { fps: 0, visMs: 0, draws: 0, tris: 0 }, lastHud: 0, toastUntil: 0, frameStats: null,
 };
 window.portalDemo = app;
@@ -2373,9 +2703,13 @@ function loadScenario(scn) {
     const c = scn.camera;
     if (c) { app.cam.pos = c.pos.slice(); app.cam.yaw = (c.yaw || 0) * Math.PI / 180; app.cam.pitch = (c.pitch || 0) * Math.PI / 180; }
     app.cam.start = { pos: app.cam.pos.slice(), yaw: app.cam.yaw, pitch: app.cam.pitch };
+    resetPlayer(app.cam.pos);
     let b = [Infinity, Infinity, -Infinity, -Infinity];
     for (const a of world.areas.slice(1)) b = [Math.min(b[0], a.bbox[0]), Math.min(b[1], a.bbox[1]), Math.max(b[2], a.bbox[2]), Math.max(b[3], a.bbox[3])];
     app.mapBounds = [b[0] - 12, b[1] - 12, b[2] + 12, b[3] + 12];
+    let ib = (scn.outdoor && scn.outdoor.terrain && scn.outdoor.terrain.extent || b).slice();
+    for (const v of scn.vehicles || []) for (const q of v.route.points) ib = [Math.min(ib[0], q[0]), Math.min(ib[1], q[1]), Math.max(ib[2], q[0]), Math.max(ib[3], q[1])];
+    app.islandBounds = [ib[0] - 30, ib[1] - 30, ib[2] + 30, ib[3] + 30];
     if (world.warnings.length) toast(`${world.warnings.length} scenario warning(s), see console`);
     else toast(`Loaded "${scn.name || 'scenario'}": ${world.areas.length - 1} areas, ${world.portals.length} portals`);
 }
@@ -2400,7 +2734,9 @@ document.addEventListener('keydown', e => {
         case 'Digit6': o.occluders = !o.occluders; toast(`Occluders ${o.occluders ? 'ON' : 'OFF'}`); break;
         case 'KeyM': o.map = !o.map; break;
         case 'KeyH': o.help = !o.help; break;
-        case 'KeyR': Object.assign(app.cam, { pos: app.cam.start.pos.slice(), yaw: app.cam.start.yaw, pitch: app.cam.start.pitch }); break;
+        case 'KeyR': Object.assign(app.cam, { pos: app.cam.start.pos.slice(), yaw: app.cam.start.yaw, pitch: app.cam.start.pitch }); resetPlayer(app.cam.pos); break;
+        case 'KeyV': o.walk = !o.walk; if (o.walk) resetPlayer(app.cam.pos); toast(o.walk ? 'Walk mode' : 'Fly mode (noclip)'); break;
+        case 'KeyN': o.island = !o.island; break;
         case 'KeyF': useDoor(); break;
     }
 });
@@ -2426,7 +2762,9 @@ mapCanvas.addEventListener('click', e => {
     if (!m) return;
     const x = m.ix(e.clientX - r.left), z = m.iz(e.clientY - r.top);
     const w = app.world, a = w.areas[w.areaAt([x, 1.0, z])];
-    app.cam.pos = [x, a.outdoor ? w.terrainHeight(x, z) + 1.7 : Math.max(a.y, 0) + 1.7, z];
+    const y = !a.outdoor && !a.vehicle ? a.y : w.groundAt([x, 60, z], 0).y;
+    app.cam.pos = [x, y + EYE, z];
+    if (app.opts.walk) resetPlayer(app.cam.pos);
 });
 
 document.addEventListener('dragover', e => e.preventDefault());
@@ -2443,8 +2781,70 @@ function camBasis() {
     const right = [Math.cos(yaw), 0, Math.sin(yaw)];
     return { fwd, right, up: v3.cross(right, fwd) };
 }
+// ---- walking: gravity, walls, stairs, ladders, swimming, riding vehicles ----
+const EYE = 1.65, PLAYER_R = 0.3;
+function resetPlayer(eye) {
+    app.player = { feet: [eye[0], eye[1] - EYE, eye[2]], vy: 0, support: null, local: null, onGround: false, wasGround: false, swimming: false, climbing: false };
+}
+function walkUpdate(dt) {
+    const w = app.world, P = app.player, k = app.keys;
+    // ride along with whatever vehicle we stand on (or are inside)
+    if (P.support) { P.feet = P.support.toWorld(P.local); app.cam.yaw -= P.support.dHeading; }
+    const { fwd, right } = camBasis(), f = v3.norm([fwd[0], 0, fwd[2]]);
+    let mv = [0, 0, 0];
+    if (k.has('KeyW')) mv = v3.add(mv, f);
+    if (k.has('KeyS')) mv = v3.sub(mv, f);
+    if (k.has('KeyD')) mv = v3.add(mv, right);
+    if (k.has('KeyA')) mv = v3.sub(mv, right);
+    if (v3.len(mv) > 0) mv = v3.norm(mv);
+    const speed = (k.has('ShiftLeft') || k.has('ShiftRight') ? 7.5 : 4.2) * (P.swimming ? 0.45 : 1);
+    const step = P.swimming ? 3.2 : 0.55;
+    // ladders: W / S climb; forward motion only at the top, to step off
+    const lad = w.ladderAt(P.feet, PLAYER_R);
+    let climb = 0;
+    P.climbing = !!lad && (k.has('KeyW') || k.has('KeyS'));
+    if (P.climbing) {
+        climb = (k.has('KeyW') ? 1 : -1) * 2.4 * dt;
+        if (!(k.has('KeyW') && P.feet[1] >= lad.top - 0.2)) mv = v3.sub(mv, v3.mul(f, v3.dot(mv, f)));
+    }
+    const h = v3.mul(mv, speed * dt), n = Math.max(1, Math.ceil(Math.hypot(h[0], h[2]) / 0.1));
+    for (let i = 0; i < n; i++) { P.feet[0] += h[0] / n; P.feet[2] += h[2] / n; w.collide(P.feet, PLAYER_R, step, 1.75); }
+    if (P.climbing) { P.feet[1] += climb; P.vy = 0; }
+    else {
+        if (k.has('Space') && (P.onGround || P.swimming)) P.vy = P.swimming ? 3.5 : 5.2;
+        P.vy -= 18 * dt;
+        P.feet[1] += P.vy * dt;
+    }
+    // ground under the whole footprint (centre + 4 rim samples) so short treads can be stepped onto
+    let g = w.groundAt(P.feet, P.climbing ? 0.05 : step);
+    if (!P.climbing) for (const [ox, oz] of [[0.7, 0], [-0.7, 0], [0, 0.7], [0, -0.7]]) {
+        const gi = w.groundAt([P.feet[0] + ox * PLAYER_R, P.feet[1], P.feet[2] + oz * PLAYER_R], step);
+        if (gi.y > g.y) g = gi;
+    }
+    P.onGround = false;
+    if (!P.climbing && P.vy <= 0 && (P.feet[1] <= g.y + 1e-3 || (P.wasGround && P.feet[1] - g.y < 0.35))) {
+        P.feet[1] = g.y; P.vy = 0; P.onGround = true;
+    }
+    P.support = P.climbing ? (lad.o.vehicle || null) : g.support;
+    const wl = w.water && w.areaAt(v3.add(P.feet, [0, 0.5, 0])) === 0 ? w.water.level : -Infinity;   // the sea is outdoors only
+    P.swimming = P.feet[1] < wl - 1.3 + 1e-3 && !P.onGround;
+    if (P.feet[1] < wl - 1.3) { P.feet[1] = wl - 1.3; P.vy = Math.max(P.vy, 0); P.swimming = true; P.support = null; }
+    if (P.feet[1] < -40) resetPlayer(app.cam.start.pos);
+    P.wasGround = P.onGround;
+    if (P.support) P.local = P.support.toLocal(P.feet);
+    app.cam.pos = v3.add(P.feet, [0, EYE, 0]);
+}
 function updateCamera(dt) {
     const k = app.keys, { fwd, right } = camBasis();
+    if (app.opts.walk) {
+        walkUpdate(dt);
+        const turn = 1.8 * dt;
+        if (k.has('ArrowLeft')) app.cam.yaw -= turn;
+        if (k.has('ArrowRight')) app.cam.yaw += turn;
+        if (k.has('ArrowUp')) app.cam.pitch = Math.min(1.5, app.cam.pitch + turn);
+        if (k.has('ArrowDown')) app.cam.pitch = Math.max(-1.5, app.cam.pitch - turn);
+        return;
+    }
     let mv = [0, 0, 0];
     if (k.has('KeyW')) mv = v3.add(mv, fwd);
     if (k.has('KeyS')) mv = v3.sub(mv, fwd);
@@ -2476,8 +2876,8 @@ function tick(now) {
     if (canvas.width !== W || canvas.height !== H) { canvas.width = W; canvas.height = H; }
     const R = app.renderer, w = app.world, o = app.opts;
     R.resize(W, H);
+    w.update(dt, t, [app.cam.pos]);        // vehicles first, so riding players use this frame's pose
     updateCamera(dt);
-    w.update(dt, t, [app.cam.pos]);
 
     const { fwd } = camBasis(), eye = app.cam.pos;
     const proj = m4.perspective(app.cam.fov, W / H, 0.05, 400);
@@ -2537,7 +2937,8 @@ function buildLines(vis) {
     if (o.volumes) {
         for (let i = 1; i < w.areas.length; i++) {
             const a = w.areas[i], c = vis.nodes[i] ? [0.3, 1, 0.5, 0.7] : [0.5, 0.55, 0.6, 0.25];
-            const lo = a.shape.map(p => [p[0], a.y + 0.02, p[1]]), hi = a.shape.map(p => [p[0], a.top - 0.02, p[1]]);
+            const W3 = q => a.vehicle ? a.vehicle.toWorld(q) : q;
+            const lo = a.shape.map(p => W3([p[0], a.y + 0.02, p[1]])), hi = a.shape.map(p => W3([p[0], a.top - 0.02, p[1]]));
             L.loop(lo, c, true); L.loop(hi, c, true);
             for (let k = 0; k < lo.length; k++) L.line(lo[k], hi[k], c, true);
         }
@@ -2573,7 +2974,7 @@ function updateHud(vis) {
     lines.push(`culling ${flag(o.culling)}  masking <span class="${app.frameMode === 'stencil' ? 'on' : 'w'}">${app.frameMode}</span>  occluders ${flag(o.occluders)}`);
     lines.push(`areas visible ${vAreas.length}/${w.areas.length}  entries ${vis.entries.length}  sky ${flag(vis.sky, 'yes', 'no')}`);
     lines.push(`portals       tested ${vis.tested}  passed ${vis.passed}  <span class="d">closed ${vis.closed}</span>  occluded ${vis.occludedPortals}`);
-    lines.push(`stencil       refs ${fs.refs - 1}  marks ${fs.marks}  glass panes ${fs.glass}  water ${fs.water}`);
+    lines.push(`stencil       refs ${fs.refs - 1}  marks ${fs.marks}  glass panes ${fs.glass}  fog veils ${fs.veils}  water ${fs.water}`);
     lines.push(`outdoor tree  <span class="${fs.outNodes ? '' : 'off'}">quadtree ${w.outdoorTree.nodeCount} nodes: visited ${fs.outNodes}, tested ${fs.outObjs}</span>`);
     lines.push(`indoor trees  bvh per area: visited ${fs.inNodes}, tested ${fs.inObjs}`);
     lines.push(`draws         ${s.draws} (${s.objs} objs of ${w.objects.length + w.dynamic.length})  tris ${(s.tris / 1000).toFixed(1)}k/${(w.totalTris / 1000).toFixed(1)}k  occluded ${fs.occluded}`);
@@ -2586,6 +2987,10 @@ function updateHud(vis) {
         lines.push(`${'  '.repeat(e.depth)}${e.depth ? '└ ' : ''}${via}${a.name}${e.skyOnly ? ' <span class="w">[sky only]</span>' : ''}${e.ref !== undefined && app.frameMode === 'stencil' ? ` <span class="off">#${e.ref}</span>` : ''}`);
     }
     if (vis.entries.length > shown.length) lines.push(`  … ${vis.entries.length - shown.length} more`);
+    const P = app.player;
+    lines.push('');
+    lines.push(`<span class="t">PLAYER</span> ${o.walk ? (P.climbing ? 'climbing' : P.swimming ? 'swimming' : P.onGround ? 'walking' : 'airborne') : 'flying'}${o.walk && P.support ? ` on ${P.support.id}` : ''}`);
+    for (const veh of w.vehicles) lines.push(`<span class="t">SHIP</span> ${veh.id}  ${veh.state}${veh.docked ? ` (${Math.max(0, veh.wait).toFixed(0)} s)` : ''}  ${(veh.v * 1.944).toFixed(1)} kn  hdg ${((veh.heading * 180 / Math.PI + 360) % 360).toFixed(0)}°  heel ${(veh.roll * 180 / Math.PI).toFixed(1)}°`);
     const drone = w.dynamic.find(d => d.type === 'drone');
     if (drone) {
         lines.push('');
@@ -2602,7 +3007,7 @@ function drawMinimap(vis) {
     const g = mapCanvas.getContext('2d');
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     g.clearRect(0, 0, cw, ch);
-    const b = app.mapBounds, s = Math.min((cw - 12) / (b[2] - b[0]), (ch - 12) / (b[3] - b[1]));
+    const b = app.opts.island ? app.islandBounds : app.mapBounds, s = Math.min((cw - 12) / (b[2] - b[0]), (ch - 12) / (b[3] - b[1]));
     const ox = (cw - (b[2] - b[0]) * s) / 2, oy = (ch - (b[3] - b[1]) * s) / 2;
     // top-down view of a right-handed, y-up world: +z points up the map, +x points left
     const X = x => ox + (b[2] - x) * s, Y = z => ch - (oy + (z - b[1]) * s);
@@ -2616,15 +3021,22 @@ function drawMinimap(vis) {
         g.beginPath(); q.forEach((v, i) => i ? g.lineTo(X(v[0]), Y(v[1])) : g.moveTo(X(v[0]), Y(v[1]))); g.closePath();
         g.fillStyle = 'rgba(40,110,150,0.35)'; g.fill();
     }
-    for (const h of w.hulls || []) {
-        g.beginPath(); h.forEach((v, i) => i ? g.lineTo(X(v[0]), Y(v[1])) : g.moveTo(X(v[0]), Y(v[1]))); g.closePath();
+    for (const veh of w.vehicles) {
+        g.setLineDash([3, 4]); g.strokeStyle = 'rgba(160,200,230,0.35)'; g.lineWidth = 1;
+        g.beginPath(); veh.samples.forEach((sm, i) => i ? g.lineTo(X(sm.p[0]), Y(sm.p[1])) : g.moveTo(X(sm.p[0]), Y(sm.p[1]))); g.closePath(); g.stroke();
+        g.setLineDash([]);
+    }
+    for (const h of w.hullDefs || []) {
+        const veh = w.vehicles.find(v => v.hull === h);
+        const pts = veh ? h.outline.map(q => { const r = veh.toWorld([q[0], h.deck, q[1]]); return [r[0], r[2]]; }) : h.outline;
+        g.beginPath(); pts.forEach((v, i) => i ? g.lineTo(X(v[0]), Y(v[1])) : g.moveTo(X(v[0]), Y(v[1]))); g.closePath();
         g.fillStyle = 'rgba(150,50,35,0.45)'; g.fill();
     }
     const root = vis.root, camY = app.cam.pos[1];
     const areasSorted = w.areas.slice(1).sort((a, c) => a.y - c.y);
     for (const a of areasSorted) {
         g.beginPath();
-        a.shape.forEach((p, i) => i ? g.lineTo(X(p[0]), Y(p[1])) : g.moveTo(X(p[0]), Y(p[1])));
+        w.areaShape2D(a).forEach((p, i) => i ? g.lineTo(X(p[0]), Y(p[1])) : g.moveTo(X(p[0]), Y(p[1])));
         g.closePath();
         const seen = vis.nodes[a.index] && vis.nodes[a.index].some(e => !e.skyOnly);
         const level = camY >= a.y - 0.5 && camY <= a.top + 0.5;
@@ -2688,7 +3100,8 @@ function drawMinimap(vis) {
 }
 
 $('help').innerHTML = [
-    '<b>click</b> mouse look   <b>WASD</b> fly   <b>E/Q</b> up/down   <b>Shift</b> fast',
+    '<b>click</b> mouse look   <b>WASD</b> move   <b>Space</b> jump   <b>Shift</b> run   <b>V</b> walk / fly',
+    'ladders: <b>W/S</b> climb   fly mode: <b>E/Q</b> up/down   <b>N</b> map: compound / island',
     '<b>F</b> door status   <b>R</b> reset   <b>minimap click</b> teleport',
     '<b>1</b> portal culling   <b>2</b> freeze vis   <b>3</b> masking: stencil / scissor / none',
     '<b>4</b> portal lines   <b>5</b> area volumes   <b>6</b> occluders   <b>M</b> map   <b>H</b> help',
