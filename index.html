@@ -66,6 +66,10 @@
         #loader input { display: none; }
         #load-button { position: fixed; right: 12px; bottom: 12px; padding: 6px 12px; background: var(--panel); border: 1px solid var(--line); color: var(--text); font-family: 'Share Tech Mono', monospace; font-size: 12px; cursor: pointer; }
         #load-button:hover { border-color: var(--accent); color: var(--accent); }
+        /* above the fault card too, so another GPU can be tried from there */
+        .gpu-pick { position: fixed; right: 12px; bottom: 46px; z-index: 60; display: flex; align-items: center; gap: 8px; padding: 4px 4px 4px 10px; background: var(--panel); border: 1px solid var(--line); font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--muted); }
+        .gpu-pick select { max-width: 400px; background: #0a141a; color: var(--text); border: 1px solid var(--line); font: inherit; padding: 2px 4px; cursor: pointer; }
+        .gpu-pick select:hover, .gpu-pick select:focus { border-color: var(--accent); outline: none; }
     </style>
 </head>
 <body>
@@ -105,6 +109,7 @@
     <script src="js/render/mesh.js"></script>
     <script src="js/render/materials.js"></script>
     <script src="js/render/shaders.js"></script>
+    <script src="js/render/gpu-choice.js"></script>
     <script src="js/render/renderer.js"></script>
     <script src="js/render/frame-builder.js"></script>
     <script src="js/render/debug-lines.js"></script>

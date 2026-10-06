@@ -8,6 +8,7 @@ function showFallback(e) {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
+    document.body.appendChild(GpuChoice.panel());
     const game = new Game(document.getElementById('view'), document.getElementById('map'));
     game.renderer.onError = showFallback;
     game.onError = showFallback;

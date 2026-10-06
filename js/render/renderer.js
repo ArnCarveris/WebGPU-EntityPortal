@@ -15,7 +15,7 @@ class Renderer {
 
     async init(canvas) {
         if (!navigator.gpu) throw new Error('navigator.gpu is undefined: WebGPU is not enabled in this browser.');
-        const adapter = await navigator.gpu.requestAdapter({ powerPreference: 'high-performance' });
+        const adapter = await GpuChoice.requestAdapter();
         if (!adapter) throw new Error('No WebGPU adapter available.');
         const device = this.device = await adapter.requestDevice();
         device.lost.then(info => { if (info.reason !== 'destroyed') this.onError('WebGPU device lost: ' + info.message); });
